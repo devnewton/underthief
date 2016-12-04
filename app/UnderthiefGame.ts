@@ -1,0 +1,57 @@
+/// <reference path="../typings/phaser.d.ts"/>
+import {Intro} from "./states/Intro";
+import {Title} from "./states/Title";
+import {Options} from "./states/Options";
+import {KeyboardOptions} from "./states/KeyboardOptions";
+import {KeyboardOptionsBindKey} from "./states/KeyboardOptionsBindKey";
+import {GamepadOptions} from "./states/GamepadOptions";
+import {GamepadOptionsLayout} from "./states/GamepadOptionsLayout";
+import {GamepadOptionsBindAxisOrButton} from "./states/GamepadOptionsBindAxisOrButton";
+import {Level} from "./states/Level";
+import {Controllers} from "./utils/Controls";
+
+export class UnderthiefGame extends Phaser.Game {
+
+    controllers: Controllers;
+
+    constructor() {
+        super(1920, 1080, Phaser.CANVAS, 'game', {
+            preload: () => this.preloadGame()
+            , create: () => this.createGame()
+        });
+        this.state.add('Intro', Intro);
+        this.state.add('Title', Title);
+        this.state.add('Options', Options);
+        this.state.add('GamepadOptionsLayout', GamepadOptionsLayout);
+        this.state.add('GamepadOptionsBindAxis', GamepadOptionsBindAxisOrButton);
+        this.state.add('KeyboardOptions', KeyboardOptions);
+        this.state.add('KeyboardOptionsBindKey', KeyboardOptionsBindKey);
+        this.state.add('GamepadOptions', GamepadOptions);
+        this.state.add('Level', Level);
+    }
+
+    preloadGame() {
+        this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+        this.scale.fullScreenScaleMode = Phaser.ScaleManager.SHOW_ALL;
+        this.scale.pageAlignHorizontally = true;
+        this.scale.pageAlignVertically = true;
+    }
+
+    createGame() {
+        this.controllers = new Controllers(this);
+        this.state.start('Title');
+    }
+
+    addSpriteAnimation(sprite: Phaser.Sprite, animationName: string, frameCount: number): Phaser.Animation {
+        return sprite.animations.add(animationName, this.genAnimArray(animationName, frameCount));
+    }
+
+    private genAnimArray(name: string, n: number) {
+        let result = new Array<string>();
+        for (let i = 0; i < n; ++i) {
+            result.push(name + i);
+        }
+        return result;
+    }
+
+}

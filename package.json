@@ -1,0 +1,17 @@
+{
+    "name": "underthief",
+    "version": "0.1.0",
+    "description": "underthief",
+    "scripts": {
+        "start": "brunch watch --server",
+        "prod": "brunch build --production"
+    },
+    "devDependencies": {
+        "auto-reload-brunch": "^2.7.1",
+        "brunch": "^2.9.1",
+        "brunch-typescript": "^2.0.1"
+    },
+    "dependencies": {
+        "easystarjs": "^0.3.1"
+    }
+}

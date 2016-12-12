@@ -15,7 +15,7 @@ export class UnderthiefGame extends Phaser.Game {
     controllers: Controllers;
 
     constructor() {
-        super(1920, 1080, Phaser.CANVAS, 'game', {
+        super(1280, 720, Phaser.CANVAS, 'game', {
             preload: () => this.preloadGame()
             , create: () => this.createGame()
         });

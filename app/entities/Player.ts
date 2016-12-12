@@ -6,8 +6,8 @@ export class Player extends Phaser.Sprite {
 
     controls: AbstractControls;
 
-    constructor(game: Phaser.Game) {
-        super(game, game.world.centerX, game.world.centerY, 'betty');
+    constructor(game: Phaser.Game, key: string) {
+        super(game, game.world.centerX, game.world.centerY, key);
         this.health = 3;
         (<UnderthiefGame>game).addSpriteAnimation(this, 'player.walk.back', 4);
         (<UnderthiefGame>game).addSpriteAnimation(this, 'player.walk.front', 4);
@@ -16,19 +16,26 @@ export class Player extends Phaser.Sprite {
         this.play("player.walk.front", 0, false);
         this.anchor.setTo(0.5, 0.5);
         this.game.physics.enable(this, Phaser.Physics.ARCADE);
-        this.body.setSize(16, 16, 24, 48);
         this.body.collideWorldBounds = true;
         this.game.add.existing(this);
     }
 
     static preload(game: Phaser.Game) {
         game.load.atlasXML('betty', 'sprites/opengameart/betty.png', 'sprites/opengameart/player.xml');
-        game.load.atlasXML('bullets', 'sprites/devnewton/bullets.png', 'sprites/devnewton/bullets.xml');
+        game.load.atlasXML('betty2', 'sprites/opengameart/betty2.png', 'sprites/opengameart/player.xml');
+        game.load.atlasXML('george', 'sprites/opengameart/george.png', 'sprites/opengameart/player.xml');
+        game.load.atlasXML('george2', 'sprites/opengameart/george2.png', 'sprites/opengameart/player.xml');
     }
+
+    oldPos = new Phaser.Point(0,0);
 
     update() {
         super.update();
 
+        if (!this.oldPos.equals(this.position)) {
+            console.log(this.position);
+            this.oldPos = this.position.clone();
+        }
         if (this.controls) {
             this.body.velocity.x = 0;
             this.body.velocity.y = 0;

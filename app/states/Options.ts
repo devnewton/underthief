@@ -14,16 +14,16 @@ export class Options extends AbstractState {
 
     create() {
         super.create();
-        let logo = this.game.add.text(this.game.world.centerX, 0, 'Options', { font: "120px monospace", fill: 'white' });
+        let logo = this.game.add.text(this.game.world.centerX, 0, 'Options', { font: "100px monospace", fill: 'white' });
         logo.scale.x = 2;
         logo.scale.y = 2;
         logo.anchor.setTo(0.5, 0);
 
-        let y = 150;
-        new MenuButton(this.game, "Keyboard", 500, y += 150, () => this.game.state.start('KeyboardOptions'));
+        let y = 100;
+        new MenuButton(this.game, "Keyboard", 200, y += 150, () => this.game.state.start('KeyboardOptions'));
         if (this.input.gamepad.supported) {
-            new MenuButton(this.game, "Gamepad", 500, y += 150, () => this.game.state.start('GamepadOptions'));
+            new MenuButton(this.game, "Gamepad", 200, y += 150, () => this.game.state.start('GamepadOptions'));
         }
-        new MenuButton(this.game, "Back", 500, y += 150, () => this.game.state.start('Title'));
+        new MenuButton(this.game, "Back", 200, y += 150, () => this.game.state.start('Title'));
     }
 }

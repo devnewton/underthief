@@ -13,7 +13,9 @@ export class Player extends Phaser.Sprite {
         (<UnderthiefGame>game).addSpriteAnimation(this, 'player.walk.front', 4);
         (<UnderthiefGame>game).addSpriteAnimation(this, 'player.walk.left', 4);
         (<UnderthiefGame>game).addSpriteAnimation(this, 'player.walk.right', 4);
-        this.play("player.walk.front", 0, false);
+        (<UnderthiefGame>game).addSpriteAnimation(this, 'player.wait', 1);
+
+        this.play("player.wait", 8, false);
         this.anchor.setTo(0.5, 0.5);
         this.game.physics.enable(this, Phaser.Physics.ARCADE);
         this.body.collideWorldBounds = true;
@@ -27,7 +29,7 @@ export class Player extends Phaser.Sprite {
         game.load.atlasXML('george2', 'sprites/opengameart/george2.png', 'sprites/opengameart/player.xml');
     }
 
-    oldPos = new Phaser.Point(0,0);
+    oldPos = new Phaser.Point(0, 0);
 
     update() {
         super.update();
@@ -61,7 +63,7 @@ export class Player extends Phaser.Sprite {
             } else if (this.body.velocity.x > 0) {
                 this.play("player.walk.right", 8, false);
             } else {
-                this.play("player.walk.front", 0, false);
+                this.play("player.wait", 8, false);
             }
         }
     }

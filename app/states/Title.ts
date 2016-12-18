@@ -22,7 +22,7 @@ export class Title extends AbstractState {
         logo.scale.y = 1.4;
         logo.anchor.setTo(0.5, 0);
 
-        new MenuButton(this.game, "Start", 200, 250, () => this.game.state.start('Level'));
+        new MenuButton(this.game, "Start", 200, 250, () => this.game.state.start('TeamSelectScreen'));
         new MenuButton(this.game, "Options", 200, 400, () => this.game.state.start('Options'));
         new MenuButton(this.game, "Help", 200, 550, () => this.game.state.start('Help'));
     }

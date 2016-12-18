@@ -7,6 +7,7 @@ import {KeyboardOptionsBindKey} from "./states/KeyboardOptionsBindKey";
 import {GamepadOptions} from "./states/GamepadOptions";
 import {GamepadOptionsLayout} from "./states/GamepadOptionsLayout";
 import {GamepadOptionsBindAxisOrButton} from "./states/GamepadOptionsBindAxisOrButton";
+import {TeamSelectScreen} from "./states/TeamSelectScreen";
 import {Level} from "./states/Level";
 import {Controllers} from "./utils/Controls";
 
@@ -27,6 +28,7 @@ export class UnderthiefGame extends Phaser.Game {
         this.state.add('KeyboardOptions', KeyboardOptions);
         this.state.add('KeyboardOptionsBindKey', KeyboardOptionsBindKey);
         this.state.add('GamepadOptions', GamepadOptions);
+        this.state.add('TeamSelectScreen', TeamSelectScreen);
         this.state.add('Level', Level);
     }
 

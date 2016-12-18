@@ -1,5 +1,14 @@
 /// <reference path="../../typings/phaser.d.ts"/>
 
+export enum ControllerType {
+    CPU = -1,
+    KEYBOARD,
+    PAD1,
+    PAD2,
+    PAD3,
+    PAD4
+}
+
 export class Controllers {
     controllers: Array<AbstractControls>;
 

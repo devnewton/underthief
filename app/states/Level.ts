@@ -7,8 +7,18 @@ import { Team } from "../entities/Team";
 import { Pathfinder } from "../ia/services/Pathfinder";
 import { DamageResolver } from "../utils/DamageResolver";
 
+import { ControllerType } from "../utils/Controls";
+
+export class LevelConfig {
+    bettyController: ControllerType;
+    betty2Controller: ControllerType;
+    georgeController: ControllerType;
+    george2Controller: ControllerType;
+}
+
 export class Level extends AbstractState {
 
+    config: LevelConfig;
     collisionSprites: Phaser.Group;
     pathfinder: Pathfinder;
     damageResolver: DamageResolver;
@@ -26,6 +36,10 @@ export class Level extends AbstractState {
         this.game.load.image('arabic1', 'sprites/opengameart/arabic_set/arabic1.png');
         this.game.load.image('house_inside', 'sprites/opengameart/house_inside.png');
         this.game.load.image('misc', 'sprites/opengameart/misc.png');
+    }
+
+    init(config: LevelConfig) {
+        this.config = config;
     }
 
     create() {
@@ -57,27 +71,32 @@ export class Level extends AbstractState {
 
         this.pathfinder = new Pathfinder(map);
 
+        let controllers = (this.game as UnderthiefGame).controllers;
+
         this.leftTeam = new Team(this.game);
         let betty = new Player(this.game, 'betty');
         betty.x = 256;
         betty.y = 320;
-        betty.controls = (this.game as UnderthiefGame).controllers.getKeyboard();
+        betty.controls = controllers.getController(this.config.bettyController);
         this.leftTeam.add(betty);
 
         let betty2 = new Player(this.game, 'betty2');
         betty2.x = 256;
         betty2.y = 480;
+        betty2.controls = controllers.getController(this.config.betty2Controller);
         this.leftTeam.add(betty2);
 
         this.rightTeam = new Team(this.game);
         let george = new Player(this.game, 'george');
         george.x = 1024;
         george.y = 320;
+        george.controls = controllers.getController(this.config.georgeController);
         this.rightTeam.add(george);
 
         let george2 = new Player(this.game, 'george2');
         george2.x = 1024;
         george2.y = 480;
+        george2.controls = controllers.getController(this.config.george2Controller);
         this.rightTeam.add(george2);
         /*        leftTeam.getAt(0).controls = (this.game as UnderthiefGame).controllers.getKeyboard();
         leftTeam.getAt(1).controls = (this.game as UnderthiefGame).controllers.getPad(1);

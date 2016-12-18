@@ -1,5 +1,6 @@
 /// <reference path="../../typings/phaser.d.ts"/>
 import { AbstractState } from "./AbstractState";
+import { LevelConfig } from "./Level";
 import { MenuButton } from "../ui/MenuButton";
 import { MenuSelect, MenuSelectOption } from "../ui/MenuSelect";
 import { UnderthiefGame } from "../UnderthiefGame";
@@ -81,6 +82,13 @@ export class TeamSelectScreen extends AbstractState {
                 george2Select.setSelectedValue(ControllerType.PAD4);
                 break;
         }
-        new MenuButton(this.game, "Play", 200, 600, () => this.game.state.start('Level'));
+        new MenuButton(this.game, "Play", 200, 600, () => {
+            let config = new LevelConfig();
+            config.bettyController = bettySelect.getSelectedValue();
+            config.betty2Controller = betty2Select.getSelectedValue();
+                        config.georgeController = georgeSelect.getSelectedValue();
+                        config.george2Controller = george2Select.getSelectedValue();
+            this.game.state.start('Level', true, true, config)
+        });
     }
 }

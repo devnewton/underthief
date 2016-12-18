@@ -22,6 +22,15 @@ export class Controllers {
         ];
     }
 
+    getController(type: ControllerType): AbstractControls {
+        switch (type) {
+            case ControllerType.CPU:
+                return null;
+            default:
+                return this.controllers[type];
+        }
+    }
+
     getKeyboard(): KeyboardControls {
         return this.controllers[0] as KeyboardControls;
     }

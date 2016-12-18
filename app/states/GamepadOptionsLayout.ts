@@ -20,19 +20,19 @@ export class GamepadOptionsLayout extends AbstractState {
 
     create() {
         super.create();
-        let title = this.game.add.text(this.game.world.centerX, 0, 'Choose gamepad layout', { font: "68px monospace", fill: 'white' });
+        let title = this.game.add.text(this.game.world.centerX, 0, 'Choose gamepad layout', { font: "42px monospace", fill: 'white' });
         title.scale.x = 2;
         title.scale.y = 2;
         title.anchor.setTo(0.5, 0);
 
-        new MenuButton(this.game, "Xbox", 500, 200, () => {
+        new MenuButton(this.game, "Xbox", 200, 200, () => {
             (this.game as UnderthiefGame).controllers.getPad(this.padIndex).useXboxLayout(this.padIndex);
             this.game.state.start('Options');
         });
-        new MenuButton(this.game, "Custom", 500, 350, () => {
+        new MenuButton(this.game, "Custom", 200, 300, () => {
             this.game.state.start('GamepadOptionsBindAxis', true, false, this.padIndex);
         });
-        new MenuButton(this.game, "Back", 500, 500, () => this.game.state.start('Options'));
+        new MenuButton(this.game, "Back", 200, 500, () => this.game.state.start('Options'));
     }
 }
 

@@ -36,11 +36,11 @@ export class KeyboardOptionsBindKey extends AbstractState {
 
     create() {
         super.create();
-        let logo = this.game.add.text(this.game.world.centerX, 0, this.bindings[this.currentBinding].label, { font: "68px monospace", fill: 'white' });
+        let logo = this.game.add.text(this.game.world.centerX, 0, this.bindings[this.currentBinding].label, { font: "42px monospace", fill: 'white' });
         logo.scale.x = 2;
         logo.scale.y = 2;
         logo.anchor.setTo(0.5, 0);
-        new MenuButton(this.game, "Back", 500, 900, () => this.game.state.start('KeyboardOptions'));
+        new MenuButton(this.game, "Back", 200, 600, () => this.game.state.start('KeyboardOptions'));
     }
 
     update() {

@@ -13,6 +13,7 @@ export class Player extends Phaser.Sprite {
         (<UnderthiefGame>game).addSpriteAnimation(this, 'player.walk.front', 4);
         (<UnderthiefGame>game).addSpriteAnimation(this, 'player.walk.left', 4);
         (<UnderthiefGame>game).addSpriteAnimation(this, 'player.walk.right', 4);
+        (<UnderthiefGame>game).addSpriteAnimation(this, 'player.hammertime', 4);
         (<UnderthiefGame>game).addSpriteAnimation(this, 'player.wait', 1);
 
         this.play("player.wait", 8, false);
@@ -35,35 +36,38 @@ export class Player extends Phaser.Sprite {
         super.update();
 
         if (!this.oldPos.equals(this.position)) {
-            console.log(this.position);
             this.oldPos = this.position.clone();
         }
         if (this.controls) {
             this.body.velocity.x = 0;
             this.body.velocity.y = 0;
 
-            if (this.controls.isGoingLeft()) {
-                this.body.velocity.x = -300;
-            } else if (this.controls.isGoingRight()) {
-                this.body.velocity.x = 300;
-            }
-
-            if (this.controls.isGoingUp()) {
-                this.body.velocity.y = -300;
-            } else if (this.controls.isGoingDown()) {
-                this.body.velocity.y = 300;
-            }
-
-            if (this.body.velocity.y < 0) {
-                this.play("player.walk.back", 8, false);
-            } else if (this.body.velocity.y > 0) {
-                this.play("player.walk.front", 8, false);
-            } else if (this.body.velocity.x < 0) {
-                this.play("player.walk.left", 8, false);
-            } else if (this.body.velocity.x > 0) {
-                this.play("player.walk.right", 8, false);
+            if (this.controls.isHammerTime()) {
+                this.play("player.hammertime", 8, false);
             } else {
-                this.play("player.wait", 8, false);
+                if (this.controls.isGoingLeft()) {
+                    this.body.velocity.x = -300;
+                } else if (this.controls.isGoingRight()) {
+                    this.body.velocity.x = 300;
+                }
+
+                if (this.controls.isGoingUp()) {
+                    this.body.velocity.y = -300;
+                } else if (this.controls.isGoingDown()) {
+                    this.body.velocity.y = 300;
+                }
+
+                if (this.body.velocity.y < 0) {
+                    this.play("player.walk.back", 8, false);
+                } else if (this.body.velocity.y > 0) {
+                    this.play("player.walk.front", 8, false);
+                } else if (this.body.velocity.x < 0) {
+                    this.play("player.walk.left", 8, false);
+                } else if (this.body.velocity.x > 0) {
+                    this.play("player.walk.right", 8, false);
+                } else {
+                    this.play("player.wait", 8, false);
+                }
             }
         }
     }

@@ -42,10 +42,11 @@ export class Controllers {
 
 export abstract class AbstractControls {
 
-    abstract isGoingUp();
-    abstract isGoingDown();
-    abstract isGoingLeft();
-    abstract isGoingRight();
+    abstract isGoingUp(): boolean;
+    abstract isGoingDown(): boolean;
+    abstract isGoingLeft(): boolean;
+    abstract isGoingRight(): boolean;
+    abstract isHammerTime(): boolean;
     abstract shootingAngle(shooterX: number, shooterY: number): number;
 
     protected readNumberFromLocalStorage(key: string, defaultValue: number) {
@@ -65,6 +66,7 @@ export class KeyboardControls extends AbstractControls {
     keyCodeMoveDown: number;
     keyCodeMoveLeft: number;
     keyCodeMoveRight: number;
+    keyCodeHammerTime: number;
     keyCodeShoot: number;
     moveXAxis: number;
     moveYAxis: number;
@@ -96,6 +98,7 @@ export class KeyboardControls extends AbstractControls {
         this.keyCodeMoveLeft = Phaser.KeyCode.Q;
         this.keyCodeMoveRight = Phaser.KeyCode.D;
         this.keyCodeShoot = Phaser.KeyCode.J;
+        this.keyCodeHammerTime = Phaser.KeyCode.K;
         localStorage.setItem('keyboard.layout', 'azerty');
     }
 
@@ -105,6 +108,7 @@ export class KeyboardControls extends AbstractControls {
         this.keyCodeMoveLeft = Phaser.KeyCode.A;
         this.keyCodeMoveRight = Phaser.KeyCode.D;
         this.keyCodeShoot = Phaser.KeyCode.J;
+        this.keyCodeHammerTime = Phaser.KeyCode.K;
         localStorage.setItem('keyboard.layout', 'qwerty');
     }
 
@@ -114,6 +118,7 @@ export class KeyboardControls extends AbstractControls {
         this.keyCodeMoveLeft = Phaser.KeyCode.LEFT;
         this.keyCodeMoveRight = Phaser.KeyCode.RIGHT;
         this.keyCodeShoot = Phaser.KeyCode.SPACEBAR;
+        this.keyCodeHammerTime = Phaser.KeyCode.ALT;
         localStorage.setItem('keyboard.layout', 'other');
     }
 
@@ -163,6 +168,10 @@ export class KeyboardControls extends AbstractControls {
         return this.kb && this.kb.isDown(this.keyCodeMoveRight);
     }
 
+    isHammerTime(): boolean {
+        return this.kb && this.kb.isDown(this.keyCodeHammerTime);
+    }
+
 }
 
 export class PadControls extends AbstractControls {
@@ -171,6 +180,7 @@ export class PadControls extends AbstractControls {
     moveXAxis: number;
     moveYAxis: number;
     shootButton: number;
+    hammerTimeButton: number;
 
     constructor(game: Phaser.Game, padIndex: number) {
         super();
@@ -194,6 +204,7 @@ export class PadControls extends AbstractControls {
         this.moveXAxis = Phaser.Gamepad.XBOX360_STICK_LEFT_X;
         this.moveYAxis = Phaser.Gamepad.XBOX360_STICK_LEFT_Y;
         this.shootButton = Phaser.Gamepad.XBOX360_A;
+        this.hammerTimeButton = Phaser.Gamepad.XBOX360_B;
         localStorage.setItem('gamepad' + padIndex + '.layout', 'xbox');
     }
 
@@ -203,6 +214,7 @@ export class PadControls extends AbstractControls {
         this.moveXAxis = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.moveXAxis', Phaser.Gamepad.XBOX360_STICK_LEFT_X);
         this.moveYAxis = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.moveYAxis', Phaser.Gamepad.XBOX360_STICK_LEFT_Y);
         this.shootButton = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.shootButton', Phaser.Gamepad.XBOX360_A);
+        this.hammerTimeButton = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.hammerTimeButton', Phaser.Gamepad.XBOX360_B);
         localStorage.setItem('gamepad' + padIndex + '.layout', 'custom');
     }
 
@@ -235,6 +247,10 @@ export class PadControls extends AbstractControls {
 
     isGoingRight(): boolean {
         return this.pad && this.pad.axis(this.moveXAxis) > this.pad.deadZone;
+    }
+
+    isHammerTime(): boolean {
+        return this.pad && this.pad.isDown(this.hammerTimeButton);
     }
 
 }

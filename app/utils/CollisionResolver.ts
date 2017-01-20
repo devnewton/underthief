@@ -1,5 +1,5 @@
 /// <reference path="../../typings/phaser.d.ts"/>
-export class DamageResolver {
+export class CollisionResolver {
     game: Phaser.Game;
 
     constructor(game: Phaser.Game) {
@@ -26,9 +26,11 @@ export class DamageResolver {
 
     spriteVersusSprite(spriteA: Phaser.Sprite, spriteB: Phaser.Sprite) {
         if (spriteA.exists && spriteB.exists && spriteA.overlap(spriteB)) {
-            spriteA.damage(1);
-            spriteB.damage(1);
+            this.onCollide(spriteA, spriteB);
         }
     }
 
+    onCollide(a: Phaser.Sprite, b: Phaser.Sprite){
+        console.log('prout');
+    }
 }

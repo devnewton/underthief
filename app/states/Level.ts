@@ -2,10 +2,9 @@
 import { AbstractState } from "./AbstractState";
 import { UnderthiefGame } from "../UnderthiefGame";
 import { Player } from "../entities/Player";
-import { Team } from "../entities/Team";
+import { Team, TeamCollisionResolver } from "../entities/Team";
 
 import { Pathfinder } from "../ia/services/Pathfinder";
-import { DamageResolver } from "../utils/DamageResolver";
 
 import { ControllerType } from "../utils/Controls";
 
@@ -21,9 +20,9 @@ export class Level extends AbstractState {
     config: LevelConfig;
     collisionSprites: Phaser.Group;
     pathfinder: Pathfinder;
-    damageResolver: DamageResolver;
     leftTeam: Team;
     rightTeam: Team;
+    teamCollisionResolver: TeamCollisionResolver;
 
     constructor() {
         super();
@@ -55,8 +54,6 @@ export class Level extends AbstractState {
         map.createLayer('doors_and_furnitures');
         layer.resizeWorld();
 
-        this.damageResolver = new DamageResolver(this.game);
-
         this.collisionSprites = this.game.add.physicsGroup(Phaser.Physics.ARCADE);;
         for (let o of map.objects['collision']) {
             if (o.rectangle) {
@@ -80,12 +77,12 @@ export class Level extends AbstractState {
         betty.controls = controllers.getController(this.config.bettyController);
         this.leftTeam.add(betty);
 
-        let betty2 = new Player(this.game, 'betty2');
+       /* let betty2 = new Player(this.game, 'betty2');
         betty2.x = 256;
         betty2.y = 480;
         betty2.controls = controllers.getController(this.config.betty2Controller);
         this.leftTeam.add(betty2);
-
+*/
         this.rightTeam = new Team(this.game);
         let george = new Player(this.game, 'george');
         george.x = 1024;
@@ -93,20 +90,18 @@ export class Level extends AbstractState {
         george.controls = controllers.getController(this.config.georgeController);
         this.rightTeam.add(george);
 
-        let george2 = new Player(this.game, 'george2');
+  /*      let george2 = new Player(this.game, 'george2');
         george2.x = 1024;
         george2.y = 480;
         george2.controls = controllers.getController(this.config.george2Controller);
         this.rightTeam.add(george2);
-        /*        leftTeam.getAt(0).controls = (this.game as UnderthiefGame).controllers.getKeyboard();
-        leftTeam.getAt(1).controls = (this.game as UnderthiefGame).controllers.getPad(1);
-        leftTeam.getAt(2).controls = (this.game as UnderthiefGame).controllers.getPad(1);
-        leftTeam.getAt(4).controls = (this.game as UnderthiefGame).controllers.getPad(1);
-*/
+    */
+        this.teamCollisionResolver = new TeamCollisionResolver(this.game);
     }
 
     update() {
         // this.pathfinder.update();
+        this.teamCollisionResolver.groupVersusGroup(this.leftTeam, this.rightTeam);
         this.game.physics.arcade.collide(this.leftTeam, this.collisionSprites);
         this.game.physics.arcade.collide(this.rightTeam, this.collisionSprites);
 

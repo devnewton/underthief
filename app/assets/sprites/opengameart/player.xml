@@ -20,6 +20,11 @@
     <SubTexture name="player.walk.right1" x="144" y="48" width="48" height="48" />
     <SubTexture name="player.walk.right2" x="144" y="96" width="48" height="48" />
     <SubTexture name="player.walk.right3" x="144" y="144" width="48" height="48" />
+    <!-- dash -->
+    <SubTexture name="player.dash.front0" x="192" y="0" width="48" height="48" />
+    <SubTexture name="player.dash.left0" x="192" y="48" width="48" height="48" />
+    <SubTexture name="player.dash.back0" x="192" y="96" width="48" height="48" />
+    <SubTexture name="player.dash.right0" x="192" y="144" width="48" height="48" />
     <!-- hammertime -->
     <SubTexture name="player.hammertime0" x="0" y="192" width="64" height="64" />
     <SubTexture name="player.hammertime1" x="64" y="192" width="64" height="64" />

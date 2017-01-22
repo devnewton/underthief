@@ -10,12 +10,29 @@ class PlayerDashState implements PlayerState {
 
     dashSteps = 3;
 
+    constructor(player: Player) {
+        if (Math.abs(player.body.velocity.y) > Math.abs(player.body.velocity.x)) {
+            if (player.body.velocity.y < 0) {
+                player.play("player.dash.back", 8, false);
+            } else {
+                player.play("player.dash.front", 8, false);
+            }
+        } else {
+            if (player.body.velocity.x < 0) {
+                player.play("player.dash.left", 8, false);
+            } else {
+                player.play("player.dash.right", 8, false);
+            }
+        }
+    }
+
     update(player: Player) {
         --this.dashSteps;
         if (this.dashSteps <= 0) {
             player.body.velocity.x = 0;
             player.body.velocity.y = 0;
             if (this.dashSteps <= -10) {
+                player.dashCoolDown = 30;
                 player.state = Player.RUNNING_STATE;
             }
         }
@@ -41,6 +58,7 @@ class PlayerHammeredState implements PlayerState {
 class PlayerRunningState implements PlayerState {
     update(player: Player) {
         player.hammerTime = false;
+        --player.dashCoolDown;
         if (!player.oldPos.equals(player.position)) {
             player.oldPos = player.position.clone();
         }
@@ -48,7 +66,7 @@ class PlayerRunningState implements PlayerState {
             player.body.velocity.x = 0;
             player.body.velocity.y = 0;
             let dashAngle = player.controls.dashingAngle(player.body.center);
-            if (null != dashAngle) {
+            if (player.dashCoolDown < 0 && null != dashAngle) {
                 player.dash(dashAngle);
             } else if (player.controls.isHammerTime()) {
                 player.hammerTime = true;
@@ -89,6 +107,7 @@ export class Player extends Phaser.Sprite {
     controls: AbstractControls;
     state: PlayerState;
     hammerTime = false;
+    dashCoolDown = 0;
     static RUNNING_STATE = new PlayerRunningState();
 
     constructor(game: Phaser.Game, key: string) {
@@ -98,6 +117,10 @@ export class Player extends Phaser.Sprite {
         (<UnderthiefGame>game).addSpriteAnimation(this, 'player.walk.front', 4);
         (<UnderthiefGame>game).addSpriteAnimation(this, 'player.walk.left', 4);
         (<UnderthiefGame>game).addSpriteAnimation(this, 'player.walk.right', 4);
+        (<UnderthiefGame>game).addSpriteAnimation(this, 'player.dash.back', 1);
+        (<UnderthiefGame>game).addSpriteAnimation(this, 'player.dash.front', 1);
+        (<UnderthiefGame>game).addSpriteAnimation(this, 'player.dash.left', 1);
+        (<UnderthiefGame>game).addSpriteAnimation(this, 'player.dash.right', 1);
         (<UnderthiefGame>game).addSpriteAnimation(this, 'player.hammertime', 4);
         (<UnderthiefGame>game).addSpriteAnimation(this, 'player.hammered', 4);
         (<UnderthiefGame>game).addSpriteAnimation(this, 'player.wait', 1);
@@ -126,8 +149,8 @@ export class Player extends Phaser.Sprite {
 
     dash(angle: number) {
         if (!(this.state instanceof PlayerDashState)) {
-            this.state = new PlayerDashState();
             this.game.physics.arcade.velocityFromRotation(angle, 1200, this.body.velocity);
+            this.state = new PlayerDashState(this);
         }
     }
 

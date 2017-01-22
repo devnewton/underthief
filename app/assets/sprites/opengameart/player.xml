@@ -25,6 +25,11 @@
     <SubTexture name="player.hammertime1" x="64" y="192" width="64" height="64" />
     <SubTexture name="player.hammertime2" x="128" y="192" width="64" height="64" />
     <SubTexture name="player.hammertime3" x="192" y="192" width="64" height="64" />
+    <!-- hammered -->
+    <SubTexture name="player.hammered0" x="0" y="0" width="48" height="48" />
+    <SubTexture name="player.hammered1" x="48" y="0" width="48" height="48" />
+    <SubTexture name="player.hammered2" x="96" y="0" width="48" height="48" />
+    <SubTexture name="player.hammered3" x="144" y="0" width="48" height="48" />
     <!-- wait -->
     <SubTexture name="player.wait0" x="0" y="0" width="48" height="48" />
 </TextureAtlas>

@@ -32,6 +32,8 @@ class PlayerHammeredState implements PlayerState {
             player.body.velocity.x = 0;
             player.body.velocity.y = 0;
             player.state = Player.RUNNING_STATE;
+        } else {
+            player.play("player.hammered", 8, false);
         }
     }
 }
@@ -97,6 +99,7 @@ export class Player extends Phaser.Sprite {
         (<UnderthiefGame>game).addSpriteAnimation(this, 'player.walk.left', 4);
         (<UnderthiefGame>game).addSpriteAnimation(this, 'player.walk.right', 4);
         (<UnderthiefGame>game).addSpriteAnimation(this, 'player.hammertime', 4);
+        (<UnderthiefGame>game).addSpriteAnimation(this, 'player.hammered', 4);
         (<UnderthiefGame>game).addSpriteAnimation(this, 'player.wait', 1);
 
         this.play("player.wait", 8, false);

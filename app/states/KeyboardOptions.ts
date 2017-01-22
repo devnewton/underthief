@@ -21,15 +21,15 @@ export class KeyboardOptions extends AbstractState {
         logo.scale.y = 2;
         logo.anchor.setTo(0.5, 0);
 
-        new MenuButton(this.game, "Azerty zsqd j", 200, 100, () => {
+        new MenuButton(this.game, "Azerty zsqd hjk", 200, 100, () => {
             (<UnderthiefGame>this.game).controllers.getKeyboard().useAzertyLayout();
             this.game.state.start('Options');
         });
-        new MenuButton(this.game, "Qwerty wsad j", 200, 200, () => {
+        new MenuButton(this.game, "Qwerty wsad hjk", 200, 200, () => {
             (<UnderthiefGame>this.game).controllers.getKeyboard().useQwertyLayout();
             this.game.state.start('Options');
         });
-        new MenuButton(this.game, "Others ⬆⬇⬅➡ space", 200, 300, () => {
+        new MenuButton(this.game, "Others ⬆⬇⬅➡ ⎇␣⎈", 200, 300, () => {
             (<UnderthiefGame>this.game).controllers.getKeyboard().useOtherKeyboardLayout();
             this.game.state.start('Options');
         });

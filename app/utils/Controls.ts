@@ -47,7 +47,8 @@ export abstract class AbstractControls {
     abstract isGoingLeft(): boolean;
     abstract isGoingRight(): boolean;
     abstract isHammerTime(): boolean;
-    abstract shootingAngle(shooterX: number, shooterY: number): number;
+    abstract shootingAngle(playerPos: Phaser.Point): number;
+    abstract dashingAngle(playerPos: Phaser.Point): number;
 
     protected readNumberFromLocalStorage(key: string, defaultValue: number) {
         let i = parseInt(localStorage.getItem(key));
@@ -68,6 +69,7 @@ export class KeyboardControls extends AbstractControls {
     keyCodeMoveRight: number;
     keyCodeHammerTime: number;
     keyCodeShoot: number;
+    keyCodeDash: number;
     moveXAxis: number;
     moveYAxis: number;
 
@@ -97,8 +99,9 @@ export class KeyboardControls extends AbstractControls {
         this.keyCodeMoveDown = Phaser.KeyCode.S;
         this.keyCodeMoveLeft = Phaser.KeyCode.Q;
         this.keyCodeMoveRight = Phaser.KeyCode.D;
+        this.keyCodeHammerTime = Phaser.KeyCode.H;
         this.keyCodeShoot = Phaser.KeyCode.J;
-        this.keyCodeHammerTime = Phaser.KeyCode.K;
+        this.keyCodeDash = Phaser.KeyCode.K;
         localStorage.setItem('keyboard.layout', 'azerty');
     }
 
@@ -107,8 +110,9 @@ export class KeyboardControls extends AbstractControls {
         this.keyCodeMoveDown = Phaser.KeyCode.S;
         this.keyCodeMoveLeft = Phaser.KeyCode.A;
         this.keyCodeMoveRight = Phaser.KeyCode.D;
+        this.keyCodeHammerTime = Phaser.KeyCode.H;
         this.keyCodeShoot = Phaser.KeyCode.J;
-        this.keyCodeHammerTime = Phaser.KeyCode.K;
+        this.keyCodeDash = Phaser.KeyCode.K;
         localStorage.setItem('keyboard.layout', 'qwerty');
     }
 
@@ -117,8 +121,9 @@ export class KeyboardControls extends AbstractControls {
         this.keyCodeMoveDown = Phaser.KeyCode.DOWN;
         this.keyCodeMoveLeft = Phaser.KeyCode.LEFT;
         this.keyCodeMoveRight = Phaser.KeyCode.RIGHT;
-        this.keyCodeShoot = Phaser.KeyCode.SPACEBAR;
         this.keyCodeHammerTime = Phaser.KeyCode.ALT;
+        this.keyCodeShoot = Phaser.KeyCode.SPACEBAR;
+        this.keyCodeDash = Phaser.KeyCode.CONTROL;
         localStorage.setItem('keyboard.layout', 'other');
     }
 
@@ -128,31 +133,42 @@ export class KeyboardControls extends AbstractControls {
         this.keyCodeMoveLeft = this.readNumberFromLocalStorage('keyboard.layout.custom.moveLeft', Phaser.KeyCode.LEFT);
         this.keyCodeMoveRight = this.readNumberFromLocalStorage('keyboard.layout.custom.moveRight', Phaser.KeyCode.RIGHT);
         this.keyCodeShoot = this.readNumberFromLocalStorage('keyboard.layout.custom.shoot', Phaser.KeyCode.SPACEBAR);
+        this.keyCodeHammerTime = this.readNumberFromLocalStorage('keyboard.layout.custom.hammer', Phaser.KeyCode.ALT);
+        this.keyCodeDash = this.readNumberFromLocalStorage('keyboard.layout.custom.dash', Phaser.KeyCode.CONTROL);
         localStorage.setItem('keyboard.layout', 'custom');
     }
 
-    shootingAngle(shooterX: number, shooterY: number): number {
-        if (this.kb) {
-            let dx = 0;
-            if (this.kb.isDown(this.keyCodeMoveLeft)) {
-                dx = -1;
-            } else if (this.kb.isDown(this.keyCodeMoveRight)) {
-                dx = 1;
-            }
-            let dy = 0;
-            if (this.kb.isDown(this.keyCodeMoveUp)) {
-                dy = -1;
-            } else if (this.kb.isDown(this.keyCodeMoveDown)) {
-                dy = 1;
-            }
-            if (dx != 0 || dy != 0) {
-                return Phaser.Math.angleBetween(0, 0, dx, dy);
-            } else {
-                return null;
-            }
+    shootingAngle(playerPos: Phaser.Point): number {
+        if (this.kb && this.kb.isDown(this.keyCodeShoot)) {
+            return this.lookingAngle();
         }
     }
 
+    dashingAngle(playerPos: Phaser.Point): number {
+        if (this.kb && this.kb.isDown(this.keyCodeDash)) {
+            return this.lookingAngle();
+        }
+    }
+
+    lookingAngle(): number {
+        let dx = 0;
+        if (this.kb.isDown(this.keyCodeMoveLeft)) {
+            dx = -1;
+        } else if (this.kb.isDown(this.keyCodeMoveRight)) {
+            dx = 1;
+        }
+        let dy = 0;
+        if (this.kb.isDown(this.keyCodeMoveUp)) {
+            dy = -1;
+        } else if (this.kb.isDown(this.keyCodeMoveDown)) {
+            dy = 1;
+        }
+        if (dx != 0 || dy != 0) {
+            return Phaser.Math.angleBetween(0, 0, dx, dy);
+        } else {
+            return null;
+        }
+    }
     isGoingUp(): boolean {
         return this.kb && this.kb.isDown(this.keyCodeMoveUp);
     }
@@ -180,6 +196,7 @@ export class PadControls extends AbstractControls {
     moveXAxis: number;
     moveYAxis: number;
     shootButton: number;
+    dashButton: number;
     hammerTimeButton: number;
 
     constructor(game: Phaser.Game, padIndex: number) {
@@ -204,6 +221,7 @@ export class PadControls extends AbstractControls {
         this.moveXAxis = Phaser.Gamepad.XBOX360_STICK_LEFT_X;
         this.moveYAxis = Phaser.Gamepad.XBOX360_STICK_LEFT_Y;
         this.shootButton = Phaser.Gamepad.XBOX360_A;
+        this.dashButton = Phaser.Gamepad.XBOX360_X;
         this.hammerTimeButton = Phaser.Gamepad.XBOX360_B;
         localStorage.setItem('gamepad' + padIndex + '.layout', 'xbox');
     }
@@ -214,24 +232,34 @@ export class PadControls extends AbstractControls {
         this.moveXAxis = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.moveXAxis', Phaser.Gamepad.XBOX360_STICK_LEFT_X);
         this.moveYAxis = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.moveYAxis', Phaser.Gamepad.XBOX360_STICK_LEFT_Y);
         this.shootButton = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.shootButton', Phaser.Gamepad.XBOX360_A);
+        this.dashButton = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.dashButton', Phaser.Gamepad.XBOX360_X);
         this.hammerTimeButton = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.hammerTimeButton', Phaser.Gamepad.XBOX360_B);
         localStorage.setItem('gamepad' + padIndex + '.layout', 'custom');
     }
 
-    shootingAngle(shooterX: number, shooterY: number): number {
+    shootingAngle(playerPos: Phaser.Point): number {
         if (this.pad && this.pad.isDown(this.shootButton)) {
-            let dx = this.pad.axis(this.moveXAxis);
-            let dy = this.pad.axis(this.moveYAxis);
-            dx = Math.abs(dx) <= this.pad.deadZone ? 0 : dx;
-            dy = Math.abs(dy) <= this.pad.deadZone ? 0 : dy;
-            if (dx != 0 || dy != 0) {
-                return Phaser.Math.angleBetween(0, 0, dx, dy);
-            } else {
-                return null;
-            }
+            return this.lookingAngle();
         }
     }
 
+    dashingAngle(playerPos: Phaser.Point): number {
+        if (this.pad && this.pad.isDown(this.dashButton)) {
+            return this.lookingAngle();
+        }
+    }
+
+    lookingAngle(): number {
+        let dx = this.pad.axis(this.moveXAxis);
+        let dy = this.pad.axis(this.moveYAxis);
+        dx = Math.abs(dx) <= this.pad.deadZone ? 0 : dx;
+        dy = Math.abs(dy) <= this.pad.deadZone ? 0 : dy;
+        if (dx != 0 || dy != 0) {
+            return Phaser.Math.angleBetween(0, 0, dx, dy);
+        } else {
+            return null;
+        }
+    }
     isGoingUp(): boolean {
         return this.pad && this.pad.axis(this.moveYAxis) < -this.pad.deadZone
             ;

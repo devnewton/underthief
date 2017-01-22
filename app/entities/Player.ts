@@ -6,6 +6,22 @@ interface PlayerState {
     update(player: Player);
 }
 
+class PlayerDashState implements PlayerState {
+
+    dashSteps = 3;
+
+    update(player: Player) {
+        --this.dashSteps;
+        if (this.dashSteps <= 0) {
+            player.body.velocity.x = 0;
+            player.body.velocity.y = 0;
+            if (this.dashSteps <= -10) {
+                player.state = Player.RUNNING_STATE;
+            }
+        }
+    }
+}
+
 class PlayerHammeredState implements PlayerState {
 
     steps = 60;
@@ -29,8 +45,10 @@ class PlayerRunningState implements PlayerState {
         if (player.controls) {
             player.body.velocity.x = 0;
             player.body.velocity.y = 0;
-
-            if (player.controls.isHammerTime()) {
+            let dashAngle = player.controls.dashingAngle(player.body.center);
+            if (null != dashAngle) {
+                player.dash(dashAngle);
+            } else if (player.controls.isHammerTime()) {
                 player.hammerTime = true;
                 player.play("player.hammertime", 8, false);
             } else {
@@ -99,8 +117,15 @@ export class Player extends Phaser.Sprite {
     oldPos = new Phaser.Point(0, 0);
 
     update() {
-        super.update();
+        super.update()
         this.state.update(this);
+    }
+
+    dash(angle: number) {
+        if (!(this.state instanceof PlayerDashState)) {
+            this.state = new PlayerDashState();
+            this.game.physics.arcade.velocityFromRotation(angle, 1200, this.body.velocity);
+        }
     }
 
     hammer(other: Player) {

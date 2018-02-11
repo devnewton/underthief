@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="32" tileheight="32" nextobjectid="46">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="23" tilewidth="32" tileheight="32" nextobjectid="49">
  <tileset firstgid="1" name="pathfind" tilewidth="32" tileheight="32" tilecount="4">
   <image source="pathfind.png" width="64" height="64"/>
   <tile id="0">
@@ -83,10 +83,7 @@
   <properties>
    <property name="collision" value="true"/>
   </properties>
-  <object id="20" x="-7" y="86" width="39" height="644"/>
-  <object id="22" x="-4" y="1" width="1291.88" height="97"/>
-  <object id="37" x="1244.5" y="90" width="39" height="644"/>
-  <object id="38" x="-7.63697" y="702.955" width="1291.88" height="97"/>
+  <object id="48" name="world-bounds" x="32" y="96" width="1216" height="608"/>
  </objectgroup>
  <layer name="pathfind" width="40" height="23" visible="0" opacity="0.56">
   <data encoding="csv">
@@ -115,14 +112,15 @@
 2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 </data>
  </layer>
- <objectgroup name="boxers-capture-points">
+ <objectgroup name="boxers-capture-points" visible="0">
   <object id="39" x="130" y="222.667" width="26.6667" height="19.3333"/>
   <object id="41" x="130" y="382.333" width="26.6667" height="19.3333"/>
   <object id="42" x="130.667" y="543" width="26.6667" height="19.3333"/>
  </objectgroup>
- <objectgroup name="bra-capture-points">
+ <objectgroup name="bra-capture-points" visible="0">
   <object id="43" x="1122.33" y="223.333" width="26.6667" height="19.3333"/>
   <object id="44" x="1122.33" y="383.333" width="26.6667" height="19.3333"/>
   <object id="45" x="1122" y="543.667" width="26.6667" height="19.3333"/>
  </objectgroup>
+ <objectgroup name="world-bounds"/>
 </map>

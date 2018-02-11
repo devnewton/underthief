@@ -28,9 +28,9 @@
          "name":"collision",
          "objects":[
                 {
-                 "height":644,
-                 "id":20,
-                 "name":"",
+                 "height":608,
+                 "id":48,
+                 "name":"world-bounds",
                  "properties":
                     {
 
@@ -38,54 +38,9 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":39,
-                 "x":-7,
-                 "y":86
-                }, 
-                {
-                 "height":97,
-                 "id":22,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":1291.88,
-                 "x":-4,
-                 "y":1
-                }, 
-                {
-                 "height":644,
-                 "id":37,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":39,
-                 "x":1244.5,
-                 "y":90
-                }, 
-                {
-                 "height":97,
-                 "id":38,
-                 "name":"",
-                 "properties":
-                    {
-
-                    },
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":1291.88,
-                 "x":-7.63697,
-                 "y":702.955
+                 "width":1216,
+                 "x":32,
+                 "y":96
                 }],
          "opacity":1,
          "properties":
@@ -111,11 +66,11 @@
         }, 
         {
          "draworder":"topdown",
-         "height":23,
+         "height":0,
          "name":"boxers-capture-points",
          "objects":[
                 {
-                 "height":19.3333333333333,
+                 "height":19.3333,
                  "id":39,
                  "name":"",
                  "properties":
@@ -125,9 +80,9 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":26.6666666666667,
+                 "width":26.6667,
                  "x":130,
-                 "y":222.666666666667
+                 "y":222.667
                 }, 
                 {
                  "height":19.3333,
@@ -141,8 +96,8 @@
                  "type":"",
                  "visible":true,
                  "width":26.6667,
-                 "x":129.999983333333,
-                 "y":382.33335
+                 "x":130,
+                 "y":382.333
                 }, 
                 {
                  "height":19.3333,
@@ -156,23 +111,23 @@
                  "type":"",
                  "visible":true,
                  "width":26.6667,
-                 "x":130.66665,
-                 "y":543.000016666667
+                 "x":130.667,
+                 "y":543
                 }],
          "opacity":1,
          "type":"objectgroup",
-         "visible":true,
-         "width":40,
+         "visible":false,
+         "width":0,
          "x":0,
          "y":0
         }, 
         {
          "draworder":"topdown",
-         "height":23,
+         "height":0,
          "name":"bra-capture-points",
          "objects":[
                 {
-                 "height":19.3333333333333,
+                 "height":19.3333,
                  "id":43,
                  "name":"",
                  "properties":
@@ -182,9 +137,9 @@
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":26.6666666666667,
-                 "x":1122.33333333333,
-                 "y":223.333333333333
+                 "width":26.6667,
+                 "x":1122.33,
+                 "y":223.333
                 }, 
                 {
                  "height":19.3333,
@@ -198,8 +153,8 @@
                  "type":"",
                  "visible":true,
                  "width":26.6667,
-                 "x":1122.33331666667,
-                 "y":383.33335
+                 "x":1122.33,
+                 "y":383.333
                 }, 
                 {
                  "height":19.3333,
@@ -213,9 +168,21 @@
                  "type":"",
                  "visible":true,
                  "width":26.6667,
-                 "x":1121.99998333333,
-                 "y":543.666683333333
+                 "x":1122,
+                 "y":543.667
                 }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":false,
+         "width":0,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "height":23,
+         "name":"world-bounds",
+         "objects":[],
          "opacity":1,
          "type":"objectgroup",
          "visible":true,
@@ -223,7 +190,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":46,
+ "nextobjectid":49,
  "orientation":"orthogonal",
  "properties":
     {

@@ -63,7 +63,9 @@ export class Level extends AbstractState {
 
         this.collisionSprites = this.game.add.physicsGroup(Phaser.Physics.ARCADE);
         for (let o of map.objects['collision']) {
-            if (o.rectangle) {
+            if(o.name === 'world-bounds' ) {
+                this.game.physics.arcade.setBounds(o.x, o.y, o.width, o.height);
+            } else if (o.rectangle) {
                 const sprite = this.game.add.sprite(o.x, o.y);
                 this.game.physics.enable(sprite, Phaser.Physics.ARCADE);
                 sprite.body.immovable = true;

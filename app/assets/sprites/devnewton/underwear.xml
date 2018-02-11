@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<TextureAtlas imagePath="bra.png">
+    <!-- wait -->
+    <SubTexture name="underwear.moving0" x="0" y="0" width="64" height="64" />
+</TextureAtlas>

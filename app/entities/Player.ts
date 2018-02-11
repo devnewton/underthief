@@ -128,6 +128,7 @@ export class Player extends Phaser.Sprite {
         this.play("player.wait", 8, false);
         this.anchor.setTo(0.5, 0.5);
         this.game.physics.enable(this, Phaser.Physics.ARCADE);
+        this.body.setCircle(24);
         this.body.collideWorldBounds = true;
         this.game.add.existing(this);
         this.state = Player.RUNNING_STATE;

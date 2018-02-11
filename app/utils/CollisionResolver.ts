@@ -25,9 +25,13 @@ export class CollisionResolver {
     }
 
     spriteVersusSprite(spriteA: Phaser.Sprite, spriteB: Phaser.Sprite) {
-        if (spriteA.exists && spriteB.exists && spriteA.overlap(spriteB)) {
+        if (this.checkCollision(spriteA, spriteB)) {
             this.onCollide(spriteA, spriteB);
         }
+    }
+
+    checkCollision(spriteA: Phaser.Sprite, spriteB: Phaser.Sprite) {
+        return spriteA.exists && spriteB.exists && spriteA.overlap(spriteB);
     }
 
     onCollide(a: Phaser.Sprite, b: Phaser.Sprite){

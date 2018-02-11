@@ -2,6 +2,7 @@
 import { AbstractState } from "./AbstractState";
 import { UnderthiefGame } from "../UnderthiefGame";
 import { Player } from "../entities/Player";
+import { Underwear, UnderwearCapturePoints, UnderwearCaptureCollisionResolver } from "../entities/Underwear";
 import { Team, TeamCollisionResolver } from "../entities/Team";
 
 import { Pathfinder } from "../ia/services/Pathfinder";
@@ -22,7 +23,12 @@ export class Level extends AbstractState {
     pathfinder: Pathfinder;
     leftTeam: Team;
     rightTeam: Team;
+    braGroup: Phaser.Group;
+    boxersGroup: Phaser.Group;
     teamCollisionResolver: TeamCollisionResolver;
+    braCapturePoints: UnderwearCapturePoints;
+    boxersCapturePoints: UnderwearCapturePoints;
+    underwearCaptureCollisionResolver: UnderwearCaptureCollisionResolver;
 
     constructor() {
         super();
@@ -30,6 +36,7 @@ export class Level extends AbstractState {
 
     preload() {
         Player.preload(this.game);
+        Underwear.preload(this.game);
         this.game.load.tilemap('map', 'levels/level1.json', null, Phaser.Tilemap.TILED_JSON);
         this.game.load.image('interior', 'sprites/opengameart/LPC_house_interior/interior.png');
         this.game.load.image('arabic1', 'sprites/opengameart/arabic_set/arabic1.png');
@@ -54,7 +61,7 @@ export class Level extends AbstractState {
         map.createLayer('doors_and_furnitures');
         layer.resizeWorld();
 
-        this.collisionSprites = this.game.add.physicsGroup(Phaser.Physics.ARCADE);;
+        this.collisionSprites = this.game.add.physicsGroup(Phaser.Physics.ARCADE);
         for (let o of map.objects['collision']) {
             if (o.rectangle) {
                 const sprite = this.game.add.sprite(o.x, o.y);
@@ -65,6 +72,10 @@ export class Level extends AbstractState {
                 this.collisionSprites.add(sprite);
             }
         }
+
+        this.braCapturePoints = new UnderwearCapturePoints(this.game, map, 'bra');
+        this.boxersCapturePoints = new UnderwearCapturePoints(this.game, map, 'boxers');
+        this.underwearCaptureCollisionResolver = new UnderwearCaptureCollisionResolver(this.game);
 
         this.pathfinder = new Pathfinder(map);
 
@@ -77,12 +88,29 @@ export class Level extends AbstractState {
         betty.controls = controllers.getController(this.config.bettyController);
         this.leftTeam.add(betty);
 
-       /* let betty2 = new Player(this.game, 'betty2');
+        let betty2 = new Player(this.game, 'betty2');
         betty2.x = 256;
         betty2.y = 480;
         betty2.controls = controllers.getController(this.config.betty2Controller);
         this.leftTeam.add(betty2);
-*/
+
+        this.braGroup = this.game.add.physicsGroup(Phaser.Physics.ARCADE);
+
+        let bra1 = new Underwear(this.game, 'bra');
+        bra1.x = 512;
+        bra1.y = 240;
+        this.braGroup.add(bra1);
+
+        let bra2 = new Underwear(this.game, 'bra');
+        bra2.x = 512;
+        bra2.y = 400;
+        this.braGroup.add(bra2);
+
+        let bra3 = new Underwear(this.game, 'bra');
+        bra3.x = 512;
+        bra3.y = 560;
+        this.braGroup.add(bra3);
+
         this.rightTeam = new Team(this.game);
         let george = new Player(this.game, 'george');
         george.x = 1024;
@@ -90,20 +118,54 @@ export class Level extends AbstractState {
         george.controls = controllers.getController(this.config.georgeController);
         this.rightTeam.add(george);
 
-  /*      let george2 = new Player(this.game, 'george2');
+        let george2 = new Player(this.game, 'george2');
         george2.x = 1024;
         george2.y = 480;
         george2.controls = controllers.getController(this.config.george2Controller);
         this.rightTeam.add(george2);
-    */
+
+        this.boxersGroup = this.game.add.physicsGroup(Phaser.Physics.ARCADE);
+
+        let boxers1 = new Underwear(this.game, 'boxers');
+        boxers1.x = 768;
+        boxers1.y = 240;
+        this.boxersGroup.add(boxers1);
+
+        let boxers2 = new Underwear(this.game, 'boxers');
+        boxers2.x = 768;
+        boxers2.y = 400;
+        this.boxersGroup.add(boxers2);
+
+        let boxers3 = new Underwear(this.game, 'boxers');
+        boxers3.x = 768;
+        boxers3.y = 560;
+        this.boxersGroup.add(boxers3);
+
         this.teamCollisionResolver = new TeamCollisionResolver(this.game);
     }
 
+    isNotFirstFrame = false;
+
     update() {
-        // this.pathfinder.update();
-        this.teamCollisionResolver.groupVersusGroup(this.leftTeam, this.rightTeam);
-        this.game.physics.arcade.collide(this.leftTeam, this.collisionSprites);
-        this.game.physics.arcade.collide(this.rightTeam, this.collisionSprites);
+        if (this.isNotFirstFrame) {
+            // this.pathfinder.update();
+            this.teamCollisionResolver.groupVersusGroup(this.leftTeam, this.rightTeam);
+            this.underwearCaptureCollisionResolver.groupVersusGroup(this.braGroup, this.braCapturePoints);
+            this.underwearCaptureCollisionResolver.groupVersusGroup(this.boxersGroup, this.boxersCapturePoints);
+            this.game.physics.arcade.collide(this.braGroup);
+            this.game.physics.arcade.collide(this.boxersGroup);
+            this.game.physics.arcade.collide(this.braGroup, this.boxersGroup);
+            this.game.physics.arcade.collide(this.braGroup, this.leftTeam);
+            this.game.physics.arcade.collide(this.boxersGroup, this.leftTeam);
+            this.game.physics.arcade.collide(this.braGroup, this.rightTeam);
+            this.game.physics.arcade.collide(this.boxersGroup, this.rightTeam);
+            this.game.physics.arcade.collide(this.leftTeam, this.collisionSprites);
+            this.game.physics.arcade.collide(this.rightTeam, this.collisionSprites);
+            this.game.physics.arcade.collide(this.braGroup, this.collisionSprites);
+            this.game.physics.arcade.collide(this.boxersGroup, this.collisionSprites);
+        } else {
+            this.isNotFirstFrame = true;
+        }
 
     }
 

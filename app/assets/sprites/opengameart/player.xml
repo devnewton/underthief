@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<TextureAtlas imagePath="spider01.png">
+<TextureAtlas imagePath="betty.png">
     <!-- back -->
     <SubTexture name="player.walk.back0" x="96" y="0" width="48" height="48" />
     <SubTexture name="player.walk.back1" x="96" y="48" width="48" height="48" />

@@ -99,9 +99,9 @@ export class KeyboardControls extends AbstractControls {
         this.keyCodeMoveDown = Phaser.KeyCode.S;
         this.keyCodeMoveLeft = Phaser.KeyCode.Q;
         this.keyCodeMoveRight = Phaser.KeyCode.D;
-        this.keyCodeHammerTime = Phaser.KeyCode.H;
-        this.keyCodeShoot = Phaser.KeyCode.J;
-        this.keyCodeDash = Phaser.KeyCode.K;
+        this.keyCodeHammerTime = Phaser.KeyCode.K;
+        this.keyCodeShoot = Phaser.KeyCode.L;
+        this.keyCodeDash = Phaser.KeyCode.J;
         localStorage.setItem('keyboard.layout', 'azerty');
     }
 
@@ -110,9 +110,9 @@ export class KeyboardControls extends AbstractControls {
         this.keyCodeMoveDown = Phaser.KeyCode.S;
         this.keyCodeMoveLeft = Phaser.KeyCode.A;
         this.keyCodeMoveRight = Phaser.KeyCode.D;
-        this.keyCodeHammerTime = Phaser.KeyCode.H;
-        this.keyCodeShoot = Phaser.KeyCode.J;
-        this.keyCodeDash = Phaser.KeyCode.K;
+        this.keyCodeHammerTime = Phaser.KeyCode.K;
+        this.keyCodeShoot = Phaser.KeyCode.L;
+        this.keyCodeDash = Phaser.KeyCode.J;
         localStorage.setItem('keyboard.layout', 'qwerty');
     }
 
@@ -220,9 +220,9 @@ export class PadControls extends AbstractControls {
         this.pad = this.game.input.gamepad['pad' + padIndex];
         this.moveXAxis = Phaser.Gamepad.XBOX360_STICK_LEFT_X;
         this.moveYAxis = Phaser.Gamepad.XBOX360_STICK_LEFT_Y;
-        this.shootButton = Phaser.Gamepad.XBOX360_A;
+        this.shootButton = Phaser.Gamepad.XBOX360_B;
         this.dashButton = Phaser.Gamepad.XBOX360_X;
-        this.hammerTimeButton = Phaser.Gamepad.XBOX360_B;
+        this.hammerTimeButton = Phaser.Gamepad.XBOX360_A;
         localStorage.setItem('gamepad' + padIndex + '.layout', 'xbox');
     }
 
@@ -231,9 +231,9 @@ export class PadControls extends AbstractControls {
         this.pad = this.game.input.gamepad['pad' + padIndex];
         this.moveXAxis = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.moveXAxis', Phaser.Gamepad.XBOX360_STICK_LEFT_X);
         this.moveYAxis = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.moveYAxis', Phaser.Gamepad.XBOX360_STICK_LEFT_Y);
-        this.shootButton = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.shootButton', Phaser.Gamepad.XBOX360_A);
+        this.shootButton = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.shootButton', Phaser.Gamepad.XBOX360_B);
         this.dashButton = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.dashButton', Phaser.Gamepad.XBOX360_X);
-        this.hammerTimeButton = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.hammerTimeButton', Phaser.Gamepad.XBOX360_B);
+        this.hammerTimeButton = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.hammerTimeButton', Phaser.Gamepad.XBOX360_A);
         localStorage.setItem('gamepad' + padIndex + '.layout', 'custom');
     }
 

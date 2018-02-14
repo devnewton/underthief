@@ -7,7 +7,8 @@ import { Team, TeamCollisionResolver } from "../entities/Team";
 
 import { Pathfinder } from "../ia/services/Pathfinder";
 
-import { ControllerType } from "../utils/Controls";
+import { ControllerType, CPUControls } from "../utils/Controls";
+import { CPU } from "../ia/CPU";
 
 export class LevelConfig {
     bettyController: ControllerType;
@@ -29,6 +30,7 @@ export class Level extends AbstractState {
     braCapturePoints: UnderwearCapturePoints;
     boxersCapturePoints: UnderwearCapturePoints;
     underwearCaptureCollisionResolver: UnderwearCaptureCollisionResolver;
+    cpus = [];
 
     constructor() {
         super();
@@ -144,6 +146,17 @@ export class Level extends AbstractState {
         this.boxersGroup.add(boxers3);
 
         this.teamCollisionResolver = new TeamCollisionResolver(this.game);
+
+        this.leftTeam.forEachAlive((player) => {
+            if(player.controls instanceof CPUControls) {
+                let cpu = new CPU();
+                cpu.me = player;
+                cpu.controls = player.controls;
+                cpu.capturePoints = this.braCapturePoints;
+                cpu.underwears = this.braGroup;
+                this.cpus.push(cpu);
+            }
+        }, null);
     }
 
     isNotFirstFrame = false;
@@ -165,6 +178,8 @@ export class Level extends AbstractState {
             this.game.physics.arcade.collide(this.rightTeam, this.collisionSprites);
             this.game.physics.arcade.collide(this.braGroup, this.collisionSprites);
             this.game.physics.arcade.collide(this.boxersGroup, this.collisionSprites);
+
+            this.cpus.forEach( c => c.think() );
         } else {
             this.isNotFirstFrame = true;
         }

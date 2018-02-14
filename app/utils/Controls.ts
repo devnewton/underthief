@@ -25,7 +25,7 @@ export class Controllers {
     getController(type: ControllerType): AbstractControls {
         switch (type) {
             case ControllerType.CPU:
-                return null;
+                return new CPUControls();
             default:
                 return this.controllers[type];
         }
@@ -57,6 +57,49 @@ export abstract class AbstractControls {
         } else {
             return i;
         }
+    }
+}
+
+export class CPUControls extends AbstractControls {
+
+    goingUp: boolean = false;
+    goingDown: boolean = false;
+    goingLeft: boolean = false;
+    goingRight: boolean = false;
+    hammerTime: boolean = false;
+    shootAngle: number = 0;
+    dashAngle: number = 0;
+
+    reset() {
+        this.goingUp = false;
+        this.goingDown = false;
+        this.goingLeft = false;
+        this.goingRight = false;
+        this.hammerTime = false;
+        this.shootAngle = 0;
+        this.dashAngle = 0;
+    }
+
+    isGoingUp(): boolean {
+        return this.goingUp;
+    }
+    isGoingDown(): boolean {
+        return this.goingDown;
+    }
+    isGoingLeft(): boolean {
+        return this.goingLeft;
+    }
+    isGoingRight(): boolean {
+        return this.goingRight;
+    }
+    isHammerTime(): boolean {
+        return this.hammerTime;
+    }
+    shootingAngle(playerPos: Phaser.Point): number {
+        return this.shootAngle;
+    }
+    dashingAngle(playerPos: Phaser.Point): number {
+        return this.dashAngle;
     }
 }
 

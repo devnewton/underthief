@@ -17,13 +17,13 @@ export class CPU {
 
     moveToXY(x:number, y:number) {
         if(this.me.body.x < x) {
-            this.controls.goingLeft = true;
-        } else if(this.me.body.x < x) {
             this.controls.goingRight = true;
+        } else if(this.me.body.x < x) {
+            this.controls.goingLeft = true;
         }
         if(this.me.body.y < y) {
             this.controls.goingDown = true;
-        } else if(this.me.body.y < y) {
+        } else if(this.me.body.y > y) {
             this.controls.goingUp = true;
         }
     }

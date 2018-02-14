@@ -67,8 +67,8 @@ export class CPUControls extends AbstractControls {
     goingLeft: boolean = false;
     goingRight: boolean = false;
     hammerTime: boolean = false;
-    shootAngle: number = 0;
-    dashAngle: number = 0;
+    shootAngle: number = null;
+    dashAngle: number = null;
 
     reset() {
         this.goingUp = false;
@@ -76,8 +76,8 @@ export class CPUControls extends AbstractControls {
         this.goingLeft = false;
         this.goingRight = false;
         this.hammerTime = false;
-        this.shootAngle = 0;
-        this.dashAngle = 0;
+        this.shootAngle = null;
+        this.dashAngle = null;
     }
 
     isGoingUp(): boolean {

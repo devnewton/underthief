@@ -157,6 +157,16 @@ export class Level extends AbstractState {
                 this.cpus.push(cpu);
             }
         }, null);
+        this.rightTeam.forEachAlive((player) => {
+            if(player.controls instanceof CPUControls) {
+                let cpu = new CPU();
+                cpu.me = player;
+                cpu.controls = player.controls;
+                cpu.capturePoints = this.boxersCapturePoints;
+                cpu.underwears = this.boxersGroup;
+                this.cpus.push(cpu);
+            }
+        }, null);
     }
 
     isNotFirstFrame = false;

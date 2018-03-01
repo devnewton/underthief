@@ -5,6 +5,7 @@ import { Player } from "../entities/Player";
 import { EmotionSprite } from "../entities/EmotionSprite";
 import { Underwear, UnderwearCapturePoints, UnderwearCaptureCollisionResolver } from "../entities/Underwear";
 import { Team, TeamCollisionResolver } from "../entities/Team";
+import { MenuButton } from "../ui/MenuButton";
 
 import { Pathfinder } from "../ia/services/Pathfinder";
 
@@ -23,15 +24,17 @@ export class Level extends AbstractState {
     config: LevelConfig;
     collisionSprites: Phaser.Group;
     pathfinder: Pathfinder;
-    leftTeam: Team;
-    rightTeam: Team;
+    girlsTeam: Team;
+    boysTeam: Team;
     braGroup: Phaser.Group;
     boxersGroup: Phaser.Group;
     teamCollisionResolver: TeamCollisionResolver;
     braCapturePoints: UnderwearCapturePoints;
     boxersCapturePoints: UnderwearCapturePoints;
     underwearCaptureCollisionResolver: UnderwearCaptureCollisionResolver;
-    cpus = [];
+    cpus: Array<CPU>;
+    isNotFirstFrame: boolean;
+    victory: boolean;
 
     constructor() {
         super();
@@ -41,6 +44,9 @@ export class Level extends AbstractState {
         Player.preload(this.game);
         Underwear.preload(this.game);
         EmotionSprite.preload(this.game);
+        MenuButton.preload(this.game);
+        this.game.load.image('girls-win', 'victory/girls-win.png');
+        this.game.load.image('boys-win', 'victory/boys-win.png');
         this.game.load.tilemap('map', 'levels/level1.json', null, Phaser.Tilemap.TILED_JSON);
         this.game.load.image('interior', 'sprites/opengameart/LPC_house_interior/interior.png');
         this.game.load.image('arabic1', 'sprites/opengameart/arabic_set/arabic1.png');
@@ -51,10 +57,14 @@ export class Level extends AbstractState {
 
     init(config: LevelConfig) {
         this.config = config;
+        this.cpus = [];
+        this.isNotFirstFrame = false;
+        this.victory = false;
     }
 
     create() {
         super.create();
+
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         const map = this.game.add.tilemap('map');
         map.addTilesetImage('interior');
@@ -69,7 +79,7 @@ export class Level extends AbstractState {
 
         this.collisionSprites = this.game.add.physicsGroup(Phaser.Physics.ARCADE);
         for (let o of map.objects['collision']) {
-            if(o.name === 'world-bounds' ) {
+            if (o.name === 'world-bounds') {
                 this.game.physics.arcade.setBounds(o.x, o.y, o.width, o.height);
             } else if (o.rectangle) {
                 const sprite = this.game.add.sprite(o.x, o.y);
@@ -89,34 +99,18 @@ export class Level extends AbstractState {
 
         let controllers = (this.game as UnderthiefGame).controllers;
 
-        this.leftTeam = new Team(this.game);
+        this.girlsTeam = new Team(this.game);
         let betty = new Player(this.game, 'betty');
         betty.x = 256;
         betty.y = 320;
         betty.controls = controllers.getController(this.config.bettyController);
-        this.leftTeam.add(betty);
-
-        let bettySad = new EmotionSprite(this.game, 'betty2', 'sad');
-        bettySad.x = 400;
-        bettySad.y = 400; 
-
-        let bettyHappy = new EmotionSprite(this.game, 'betty2', 'happy');
-        bettyHappy.x = 500;
-        bettyHappy.y = 500;
-
-        let georgeSad = new EmotionSprite(this.game, 'george2', 'sad');
-        georgeSad.x = 400;
-        georgeSad.y = 500;
-
-        let georgeHappy = new EmotionSprite(this.game, 'george2', 'happy');
-        georgeHappy.x = 500;
-        georgeHappy.y = 400;
+        this.girlsTeam.add(betty);
 
         let betty2 = new Player(this.game, 'betty2');
         betty2.x = 256;
         betty2.y = 480;
         betty2.controls = controllers.getController(this.config.betty2Controller);
-        this.leftTeam.add(betty2);
+        this.girlsTeam.add(betty2);
 
         this.braGroup = this.game.add.physicsGroup(Phaser.Physics.ARCADE);
 
@@ -135,18 +129,18 @@ export class Level extends AbstractState {
         bra3.y = 560;
         this.braGroup.add(bra3);
 
-        this.rightTeam = new Team(this.game);
+        this.boysTeam = new Team(this.game);
         let george = new Player(this.game, 'george');
         george.x = 1024;
         george.y = 320;
         george.controls = controllers.getController(this.config.georgeController);
-        this.rightTeam.add(george);
+        this.boysTeam.add(george);
 
         let george2 = new Player(this.game, 'george2');
         george2.x = 1024;
         george2.y = 480;
         george2.controls = controllers.getController(this.config.george2Controller);
-        this.rightTeam.add(george2);
+        this.boysTeam.add(george2);
 
         this.boxersGroup = this.game.add.physicsGroup(Phaser.Physics.ARCADE);
 
@@ -167,18 +161,8 @@ export class Level extends AbstractState {
 
         this.teamCollisionResolver = new TeamCollisionResolver(this.game);
 
-        this.leftTeam.forEachAlive((player) => {
-            if(player.controls instanceof CPUControls) {
-                let cpu = new CPU();
-                cpu.me = player;
-                cpu.controls = player.controls;
-                cpu.capturePoints = this.braCapturePoints;
-                cpu.underwears = this.braGroup;
-                this.cpus.push(cpu);
-            }
-        }, null);
-        this.rightTeam.forEachAlive((player) => {
-            if(player.controls instanceof CPUControls) {
+        this.girlsTeam.forEachAlive((player) => {
+            if (player.controls instanceof CPUControls) {
                 let cpu = new CPU();
                 cpu.me = player;
                 cpu.controls = player.controls;
@@ -187,33 +171,72 @@ export class Level extends AbstractState {
                 this.cpus.push(cpu);
             }
         }, null);
+        this.boysTeam.forEachAlive((player) => {
+            if (player.controls instanceof CPUControls) {
+                let cpu = new CPU();
+                cpu.me = player;
+                cpu.controls = player.controls;
+                cpu.capturePoints = this.braCapturePoints;
+                cpu.underwears = this.braGroup;
+                this.cpus.push(cpu);
+            }
+        }, null);
     }
-
-    isNotFirstFrame = false;
 
     update() {
         if (this.isNotFirstFrame) {
-            // this.pathfinder.update();
-            this.teamCollisionResolver.groupVersusGroup(this.leftTeam, this.rightTeam);
-            this.underwearCaptureCollisionResolver.groupVersusGroup(this.braGroup, this.braCapturePoints);
-            this.underwearCaptureCollisionResolver.groupVersusGroup(this.boxersGroup, this.boxersCapturePoints);
-            this.game.physics.arcade.collide(this.braGroup);
-            this.game.physics.arcade.collide(this.boxersGroup);
-            this.game.physics.arcade.collide(this.braGroup, this.boxersGroup);
-            this.game.physics.arcade.collide(this.braGroup, this.leftTeam);
-            this.game.physics.arcade.collide(this.boxersGroup, this.leftTeam);
-            this.game.physics.arcade.collide(this.braGroup, this.rightTeam);
-            this.game.physics.arcade.collide(this.boxersGroup, this.rightTeam);
-            this.game.physics.arcade.collide(this.leftTeam, this.collisionSprites);
-            this.game.physics.arcade.collide(this.rightTeam, this.collisionSprites);
-            this.game.physics.arcade.collide(this.braGroup, this.collisionSprites);
-            this.game.physics.arcade.collide(this.boxersGroup, this.collisionSprites);
+            if (!this.checkVictory()) {
+                this.teamCollisionResolver.groupVersusGroup(this.girlsTeam, this.boysTeam);
+                this.underwearCaptureCollisionResolver.groupVersusGroup(this.braGroup, this.braCapturePoints);
+                this.underwearCaptureCollisionResolver.groupVersusGroup(this.boxersGroup, this.boxersCapturePoints);
+                this.game.physics.arcade.collide(this.braGroup);
+                this.game.physics.arcade.collide(this.boxersGroup);
+                this.game.physics.arcade.collide(this.braGroup, this.boxersGroup);
+                this.game.physics.arcade.collide(this.braGroup, this.girlsTeam);
+                this.game.physics.arcade.collide(this.boxersGroup, this.girlsTeam);
+                this.game.physics.arcade.collide(this.braGroup, this.boysTeam);
+                this.game.physics.arcade.collide(this.boxersGroup, this.boysTeam);
+                this.game.physics.arcade.collide(this.girlsTeam, this.collisionSprites);
+                this.game.physics.arcade.collide(this.boysTeam, this.collisionSprites);
+                this.game.physics.arcade.collide(this.braGroup, this.collisionSprites);
+                this.game.physics.arcade.collide(this.boxersGroup, this.collisionSprites);
 
-            this.cpus.forEach( c => c.think() );
+                this.cpus.forEach(c => c.think());
+            }
         } else {
             this.isNotFirstFrame = true;
         }
 
+    }
+
+    checkVictory(): boolean {
+        if (!this.victory) {
+            const girlsWin = this.boxersCapturePoints.areAllCaptured();
+            const boysWin = this.braCapturePoints.areAllCaptured();
+            this.victory = boysWin || girlsWin;
+            if (this.victory) {
+                this.girlsTeam.forEachAlive((player) => {
+                    let emo = new EmotionSprite(this.game, player.key, girlsWin ? 'happy' : 'sad');
+                    emo.x = player.x;
+                    emo.y = player.y;
+                    player.kill();
+                }, null);
+                this.boysTeam.forEachAlive((player) => {
+                    let emo = new EmotionSprite(this.game, player.key, boysWin ? 'happy' : 'sad');
+                    emo.x = player.x;
+                    emo.y = player.y;
+                    player.kill();
+                }, null);
+                let victoryText = this.game.add.sprite(this.game.world.centerX, 100, boysWin && girlsWin && 'draw' || boysWin && 'boys-win' || 'girls-win');
+                var tween = this.game.add.tween(victoryText.scale).to({ x: 1.4, y: 1.4 }, 1000, "Linear", true, 0, -1);
+                tween.yoyo(true);
+                victoryText.anchor.setTo(0.5, 0);
+                new MenuButton(this.game, "Play again", 200, 260, () => this.game.state.restart(true, false, this.config));
+                new MenuButton(this.game, "Change teams", 200, 410, () => this.game.state.start('TeamSelectScreen', true, false));
+                new MenuButton(this.game, "Return to title", 200, 560, () => this.game.state.start('Title', true, false));
+            }
+        }
+        return this.victory;
     }
 
     render() {

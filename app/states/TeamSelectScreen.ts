@@ -88,7 +88,7 @@ export class TeamSelectScreen extends AbstractState {
             config.betty2Controller = betty2Select.getSelectedValue();
                         config.georgeController = georgeSelect.getSelectedValue();
                         config.george2Controller = george2Select.getSelectedValue();
-            this.game.state.start('Level', true, true, config)
+            this.game.state.start('Level', true, false, config)
         });
     }
 }

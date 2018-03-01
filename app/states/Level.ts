@@ -28,6 +28,7 @@ export class Level extends AbstractState {
     boysTeam: Team;
     braGroup: Phaser.Group;
     boxersGroup: Phaser.Group;
+    menuGroup: Phaser.Group;
     teamCollisionResolver: TeamCollisionResolver;
     braCapturePoints: UnderwearCapturePoints;
     boxersCapturePoints: UnderwearCapturePoints;
@@ -181,6 +182,20 @@ export class Level extends AbstractState {
                 this.cpus.push(cpu);
             }
         }, null);
+
+        this.menuGroup = new Phaser.Group(this.game);
+        this.menuGroup.alive = false;
+        this.menuGroup.visible = false;
+        this.menuGroup.add(new MenuButton(this.game, "Continue", 200, 260, () => {
+            if (this.victory) {
+                this.game.state.restart(true, false, this.config);
+            } else {
+                this.menuGroup.alive = false;
+                this.menuGroup.visible = false;
+            }
+        }));
+        this.menuGroup.add(new MenuButton(this.game, "Change teams", 200, 410, () => this.game.state.start('TeamSelectScreen', true, false)));
+        this.menuGroup.add(new MenuButton(this.game, "Return to title", 200, 560, () => this.game.state.start('Title', true, false)));
     }
 
     update() {
@@ -203,10 +218,27 @@ export class Level extends AbstractState {
 
                 this.cpus.forEach(c => c.think());
             }
+            this.checkMenu();
         } else {
             this.isNotFirstFrame = true;
         }
 
+    }
+
+    checkMenu(): boolean {
+        if (this.menuGroup.alive) {
+            return true;
+        }
+        let isMenuAsked = false;
+        this.girlsTeam.forEachAlive((player) => {
+            isMenuAsked = isMenuAsked || player.controls.isMenuAsked();
+        }, null);
+        this.boysTeam.forEachAlive((player) => {
+            isMenuAsked = isMenuAsked || player.controls.isMenuAsked();
+        }, null);
+        if (isMenuAsked) {
+            this.showMenu();
+        }
     }
 
     checkVictory(): boolean {
@@ -231,12 +263,15 @@ export class Level extends AbstractState {
                 var tween = this.game.add.tween(victoryText.scale).to({ x: 1.4, y: 1.4 }, 1000, "Linear", true, 0, -1);
                 tween.yoyo(true);
                 victoryText.anchor.setTo(0.5, 0);
-                new MenuButton(this.game, "Play again", 200, 260, () => this.game.state.restart(true, false, this.config));
-                new MenuButton(this.game, "Change teams", 200, 410, () => this.game.state.start('TeamSelectScreen', true, false));
-                new MenuButton(this.game, "Return to title", 200, 560, () => this.game.state.start('Title', true, false));
+                this.showMenu();
             }
         }
         return this.victory;
+    }
+
+    showMenu() {
+        this.menuGroup.alive = true;
+        this.menuGroup.visible = true;
     }
 
     render() {

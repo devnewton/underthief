@@ -47,6 +47,7 @@ export abstract class AbstractControls {
     abstract isGoingLeft(): boolean;
     abstract isGoingRight(): boolean;
     abstract isHammerTime(): boolean;
+    abstract isMenuAsked(): boolean;
     abstract dashingAngle(playerPos: Phaser.Point): number;
 
     protected readNumberFromLocalStorage(key: string, defaultValue: number) {
@@ -95,6 +96,9 @@ export class CPUControls extends AbstractControls {
     dashingAngle(playerPos: Phaser.Point): number {
         return this.dashAngle;
     }
+    isMenuAsked(): boolean {
+        return false;
+    }
 }
 
 export class KeyboardControls extends AbstractControls {
@@ -106,6 +110,7 @@ export class KeyboardControls extends AbstractControls {
     keyCodeMoveRight: number;
     keyCodeHammerTime: number;
     keyCodeDash: number;
+    keyCodeMenu: number;
     moveXAxis: number;
     moveYAxis: number;
 
@@ -137,6 +142,7 @@ export class KeyboardControls extends AbstractControls {
         this.keyCodeMoveRight = Phaser.KeyCode.D;
         this.keyCodeHammerTime = Phaser.KeyCode.K;
         this.keyCodeDash = Phaser.KeyCode.J;
+        this.keyCodeMenu = Phaser.KeyCode.ESC;
         localStorage.setItem('keyboard.layout', 'azerty');
     }
 
@@ -147,6 +153,7 @@ export class KeyboardControls extends AbstractControls {
         this.keyCodeMoveRight = Phaser.KeyCode.D;
         this.keyCodeHammerTime = Phaser.KeyCode.K;
         this.keyCodeDash = Phaser.KeyCode.J;
+        this.keyCodeMenu = Phaser.KeyCode.ESC;
         localStorage.setItem('keyboard.layout', 'qwerty');
     }
 
@@ -157,6 +164,7 @@ export class KeyboardControls extends AbstractControls {
         this.keyCodeMoveRight = Phaser.KeyCode.RIGHT;
         this.keyCodeHammerTime = Phaser.KeyCode.ALT;
         this.keyCodeDash = Phaser.KeyCode.SHIFT;
+        this.keyCodeMenu = Phaser.KeyCode.ESC;
         localStorage.setItem('keyboard.layout', 'other');
     }
 
@@ -167,6 +175,7 @@ export class KeyboardControls extends AbstractControls {
         this.keyCodeMoveRight = this.readNumberFromLocalStorage('keyboard.layout.custom.moveRight', Phaser.KeyCode.RIGHT);
         this.keyCodeHammerTime = this.readNumberFromLocalStorage('keyboard.layout.custom.hammer', Phaser.KeyCode.ALT);
         this.keyCodeDash = this.readNumberFromLocalStorage('keyboard.layout.custom.dash', Phaser.KeyCode.CONTROL);
+        this.keyCodeMenu = this.readNumberFromLocalStorage('keyboard.layout.custom.menu', Phaser.KeyCode.ESC);
         localStorage.setItem('keyboard.layout', 'custom');
     }
 
@@ -214,6 +223,10 @@ export class KeyboardControls extends AbstractControls {
         return this.kb && this.kb.isDown(this.keyCodeHammerTime);
     }
 
+    isMenuAsked(): boolean {
+        return this.kb && this.kb.isDown(this.keyCodeMenu);
+    }
+
 }
 
 export class PadControls extends AbstractControls {
@@ -222,6 +235,7 @@ export class PadControls extends AbstractControls {
     moveXAxis: number;
     moveYAxis: number;
     dashButton: number;
+    menuButton: number;
     hammerTimeButton: number;
 
     constructor(game: Phaser.Game, padIndex: number) {
@@ -246,6 +260,7 @@ export class PadControls extends AbstractControls {
         this.moveXAxis = Phaser.Gamepad.XBOX360_STICK_LEFT_X;
         this.moveYAxis = Phaser.Gamepad.XBOX360_STICK_LEFT_Y;
         this.dashButton = Phaser.Gamepad.XBOX360_X;
+        this.menuButton = Phaser.Gamepad.XBOX360_START;
         this.hammerTimeButton = Phaser.Gamepad.XBOX360_A;
         localStorage.setItem('gamepad' + padIndex + '.layout', 'xbox');
     }
@@ -256,6 +271,7 @@ export class PadControls extends AbstractControls {
         this.moveXAxis = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.moveXAxis', Phaser.Gamepad.XBOX360_STICK_LEFT_X);
         this.moveYAxis = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.moveYAxis', Phaser.Gamepad.XBOX360_STICK_LEFT_Y);
         this.dashButton = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.dashButton', Phaser.Gamepad.XBOX360_X);
+        this.menuButton = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.menuButton', Phaser.Gamepad.XBOX360_START);
         this.hammerTimeButton = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.hammerTimeButton', Phaser.Gamepad.XBOX360_A);
         localStorage.setItem('gamepad' + padIndex + '.layout', 'custom');
     }
@@ -296,6 +312,10 @@ export class PadControls extends AbstractControls {
 
     isHammerTime(): boolean {
         return this.pad && this.pad.isDown(this.hammerTimeButton);
+    }
+
+    isMenuAsked(): boolean {
+        return this.pad && this.pad.isDown(this.menuButton);
     }
 
 }

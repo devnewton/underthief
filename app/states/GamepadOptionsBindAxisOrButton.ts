@@ -9,7 +9,8 @@ export class GamepadOptionsBindAxisOrButton extends AbstractState {
         { label: 'Pull move X axis', localStorageKeySuffix: 'moveXAxis' },
         { label: 'Pull move Y axis', localStorageKeySuffix: 'moveYAxis' },
         { label: 'Press hammer button', localStorageKeySuffix: 'hammerButton' },
-        { label: 'Press dash button', localStorageKeySuffix: 'dashButton' }
+        { label: 'Press dash button', localStorageKeySuffix: 'dashButton' },
+        { label: 'Press menu button', localStorageKeySuffix: 'menuButton' }
     ];
 
     currentBinding: number = 0;

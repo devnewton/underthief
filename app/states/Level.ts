@@ -44,6 +44,7 @@ export class Level extends AbstractState {
         this.game.load.image('arabic1', 'sprites/opengameart/arabic_set/arabic1.png');
         this.game.load.image('house_inside', 'sprites/opengameart/house_inside.png');
         this.game.load.image('misc', 'sprites/opengameart/misc.png');
+        this.game.load.image('basket', 'sprites/devnewton/basket.png');
     }
 
     init(config: LevelConfig) {
@@ -58,6 +59,7 @@ export class Level extends AbstractState {
         map.addTilesetImage('arabic1');
         map.addTilesetImage('house_inside');
         map.addTilesetImage('misc');
+        map.addTilesetImage('basket');
 
         const layer = map.createLayer('ground');
         map.createLayer('doors_and_furnitures');

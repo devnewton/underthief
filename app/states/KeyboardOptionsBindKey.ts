@@ -12,7 +12,6 @@ export class KeyboardOptionsBindKey extends AbstractState {
         { label: 'Press move left key', localStorageKey: 'keyboard.layout.custom.moveLeft' },
         { label: 'Press move right key', localStorageKey: 'keyboard.layout.custom.moveRight' },
         { label: 'Press hammer key', localStorageKey: 'keyboard.layout.custom.hammer' },
-        { label: 'Press shoot key', localStorageKey: 'keyboard.layout.custom.shoot' },
         { label: 'Press dash key', localStorageKey: 'keyboard.layout.custom.dash' }
     ];
 

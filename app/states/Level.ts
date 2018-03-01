@@ -2,6 +2,7 @@
 import { AbstractState } from "./AbstractState";
 import { UnderthiefGame } from "../UnderthiefGame";
 import { Player } from "../entities/Player";
+import { EmotionSprite } from "../entities/EmotionSprite";
 import { Underwear, UnderwearCapturePoints, UnderwearCaptureCollisionResolver } from "../entities/Underwear";
 import { Team, TeamCollisionResolver } from "../entities/Team";
 
@@ -39,6 +40,7 @@ export class Level extends AbstractState {
     preload() {
         Player.preload(this.game);
         Underwear.preload(this.game);
+        EmotionSprite.preload(this.game);
         this.game.load.tilemap('map', 'levels/level1.json', null, Phaser.Tilemap.TILED_JSON);
         this.game.load.image('interior', 'sprites/opengameart/LPC_house_interior/interior.png');
         this.game.load.image('arabic1', 'sprites/opengameart/arabic_set/arabic1.png');
@@ -93,6 +95,22 @@ export class Level extends AbstractState {
         betty.y = 320;
         betty.controls = controllers.getController(this.config.bettyController);
         this.leftTeam.add(betty);
+
+        let bettySad = new EmotionSprite(this.game, 'betty2', 'sad');
+        bettySad.x = 400;
+        bettySad.y = 400; 
+
+        let bettyHappy = new EmotionSprite(this.game, 'betty2', 'happy');
+        bettyHappy.x = 500;
+        bettyHappy.y = 500;
+
+        let georgeSad = new EmotionSprite(this.game, 'george2', 'sad');
+        georgeSad.x = 400;
+        georgeSad.y = 500;
+
+        let georgeHappy = new EmotionSprite(this.game, 'george2', 'happy');
+        georgeHappy.x = 500;
+        georgeHappy.y = 400;
 
         let betty2 = new Player(this.game, 'betty2');
         betty2.x = 256;

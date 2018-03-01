@@ -1,5 +1,7 @@
 /// <reference path="../typings/phaser.d.ts"/>
 import {Intro} from "./states/Intro";
+import {Help1} from "./states/Help1";
+import {Help2} from "./states/Help2";
 import {Title} from "./states/Title";
 import {Options} from "./states/Options";
 import {KeyboardOptions} from "./states/KeyboardOptions";
@@ -22,6 +24,8 @@ export class UnderthiefGame extends Phaser.Game {
         });
         this.state.add('Intro', Intro);
         this.state.add('Title', Title);
+        this.state.add('Help1', Help1);
+        this.state.add('Help2', Help2);
         this.state.add('Options', Options);
         this.state.add('GamepadOptionsLayout', GamepadOptionsLayout);
         this.state.add('GamepadOptionsBindAxis', GamepadOptionsBindAxisOrButton);

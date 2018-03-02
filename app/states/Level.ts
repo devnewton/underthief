@@ -7,8 +7,6 @@ import { Underwear, UnderwearCapturePoints, UnderwearCaptureCollisionResolver } 
 import { Team, TeamCollisionResolver } from "../entities/Team";
 import { MenuButton } from "../ui/MenuButton";
 
-import { Pathfinder } from "../ia/services/Pathfinder";
-
 import { ControllerType, CPUControls } from "../utils/Controls";
 import { CPU } from "../ia/CPU";
 
@@ -23,7 +21,6 @@ export class Level extends AbstractState {
 
     config: LevelConfig;
     collisionSprites: Phaser.Group;
-    pathfinder: Pathfinder;
     girlsTeam: Team;
     boysTeam: Team;
     braGroup: Phaser.Group;
@@ -95,8 +92,6 @@ export class Level extends AbstractState {
         this.braCapturePoints = new UnderwearCapturePoints(this.game, map, 'bra');
         this.boxersCapturePoints = new UnderwearCapturePoints(this.game, map, 'boxers');
         this.underwearCaptureCollisionResolver = new UnderwearCaptureCollisionResolver(this.game);
-
-        this.pathfinder = new Pathfinder(map);
 
         let controllers = (this.game as UnderthiefGame).controllers;
 

@@ -12,6 +12,5 @@
         "brunch-typescript": "^2.0.1"
     },
     "dependencies": {
-        "easystarjs": "^0.3.1"
     }
 }

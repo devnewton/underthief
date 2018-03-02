@@ -57,6 +57,17 @@ export class UnderwearCapturePoints extends Phaser.Group {
         }
         return true;
     }
+
+    countCaptured(): number {
+        let count = 0;
+        for(let c in this.children) {
+            let child = <UnderwearCapturePoint> this.children[c];
+            if(child.containsUnderwear) {
+               ++count;
+            }
+        }
+        return count;
+    }
 }
 
 export class UnderwearCaptureCollisionResolver extends CollisionResolver {

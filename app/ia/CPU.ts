@@ -1,17 +1,71 @@
 /// <reference path="../../typings/phaser.d.ts"/>
 import { CPUControls } from "../utils/Controls";
 import { Player } from "../entities/Player";
+import { UnderwearCapturePoints } from "../entities/Underwear";
+
+
+enum CPUAttitude {
+    OFFENSIVE = 1,
+    DEFENSIVE = 2
+}
 
 export class CPU {
     controls: CPUControls;
     underwears: Phaser.Group;
-    capturePoints: Phaser.Group;
+    capturePoints: UnderwearCapturePoints;
     me: Player;
+    opponents: Phaser.Group;
+    buddies: Phaser.Group;
     waitUntil: number;
+    hammerUntil: number;
+    lastCapturedCount: number = 0;
 
     think() {
         this.controls.reset();
-        if (!this.waiting()) {
+        if (!this.waiting() && !this.hammering()) {
+            switch (this.chooseBehavior()) {
+                case CPUAttitude.OFFENSIVE:
+                    this.attack();
+                    break;
+                case CPUAttitude.DEFENSIVE:
+                    this.defend();
+                    break;
+            }
+
+        }
+    }
+
+    chooseBehavior(): CPUAttitude {
+        if (!this.me.cpuData.attitude) {
+            let nbOffensive = 0;
+            let nbDefensive = 0;
+            this.buddies.forEachAlive((player) => {
+                switch (player.cpuData.attitude) {
+                    case CPUAttitude.OFFENSIVE:
+                        ++nbOffensive;
+                        break;
+                    case CPUAttitude.DEFENSIVE:
+                        ++nbDefensive;
+                        break;
+                }
+            }, null);
+            if (nbDefensive < nbOffensive) {
+                this.me.cpuData.attitude = this.me.game.rnd.weightedPick([CPUAttitude.OFFENSIVE, CPUAttitude.DEFENSIVE]);
+            } else if (nbDefensive > nbOffensive) {
+                this.me.cpuData.attitude = CPUAttitude.OFFENSIVE;
+            } else {
+                this.me.cpuData.attitude = this.me.game.rnd.weightedPick([CPUAttitude.OFFENSIVE, CPUAttitude.DEFENSIVE]);
+            }
+        }
+        return this.me.cpuData.attitude;
+    }
+
+    attack() {
+        const capturedCount = this.capturePoints.countCaptured();
+        if (this.lastCapturedCount !== capturedCount) {
+            this.lastCapturedCount = capturedCount;
+            this.me.cpuData.attitude = null;
+        } else {
             let underwear = this.underwears.getClosestTo(this.me, u => u.body.enable);
             let capturePoint = this.capturePoints.getClosestTo(this.me, u => u.body.enable);
             if (underwear && capturePoint) {
@@ -19,11 +73,24 @@ export class CPU {
                     this.waitUntil = this.me.game.time.time + 500;
                 } else {
                     this.pushUnderwear(underwear, capturePoint);
-
                 }
             }
         }
     }
+
+
+    defend() {
+        let opponent = this.opponents.getClosestTo(this.me);
+        if (opponent) {
+            if (this.me.game.physics.arcade.overlap(this.me, this.opponents)) {
+                this.hammerUntil = this.me.game.time.time + 500;
+                this.me.cpuData.attitude = null;
+            } else {
+                this.moveToXY(opponent.body.x, opponent.body.y)
+            }
+        }
+    }
+
     pushUnderwear(underwear, capturePoint) {
         if (underwear.body.blocked.up && underwear.body.blocked.left) {
             this.unblockTopLeftUnderwear(underwear);
@@ -62,6 +129,19 @@ export class CPU {
                 return true;
             } else {
                 this.waitUntil = null;
+            }
+        }
+        return false;
+    }
+
+    hammering(): boolean {
+        if (this.hammerUntil) {
+            if (this.me.game.time.time < this.hammerUntil) {
+                this.controls.hammerTime = true;
+                return true;
+            } else {
+                this.waitUntil = this.me.game.time.time + 500;
+                this.hammerUntil = null;
             }
         }
         return false;

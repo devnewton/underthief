@@ -108,6 +108,7 @@ export class Player extends Phaser.Sprite {
     state: PlayerState;
     hammerTime = false;
     dashCoolDown = 0;
+    cpuData: any = {};
     static RUNNING_STATE = new PlayerRunningState();
 
     constructor(game: Phaser.Game, key: string) {

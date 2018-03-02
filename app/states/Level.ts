@@ -166,6 +166,8 @@ export class Level extends AbstractState {
             if (player.controls instanceof CPUControls) {
                 let cpu = new CPU();
                 cpu.me = player;
+                cpu.buddies = this.girlsTeam;
+                cpu.opponents = this.boysTeam;
                 cpu.controls = player.controls;
                 cpu.capturePoints = this.boxersCapturePoints;
                 cpu.underwears = this.boxersGroup;
@@ -176,6 +178,8 @@ export class Level extends AbstractState {
             if (player.controls instanceof CPUControls) {
                 let cpu = new CPU();
                 cpu.me = player;
+                cpu.buddies = this.boysTeam;
+                cpu.opponents = this.girlsTeam;
                 cpu.controls = player.controls;
                 cpu.capturePoints = this.braCapturePoints;
                 cpu.underwears = this.braGroup;

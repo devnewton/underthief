@@ -15,8 +15,8 @@ export class Underwear extends Phaser.Sprite {
         this.game.physics.enable(this, Phaser.Physics.ARCADE);
         this.body.setCircle(32);
         this.body.collideWorldBounds = true;
-        this.body.bounce.x = 0.8;
-        this.body.bounce.y = 0.8;
+        this.body.bounce.x = 0.7;
+        this.body.bounce.y = 0.7;
     }
 
     static preload(game: Phaser.Game) {

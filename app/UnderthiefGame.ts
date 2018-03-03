@@ -45,7 +45,7 @@ export class UnderthiefGame extends Phaser.Game {
 
     createGame() {
         this.controllers = new Controllers(this);
-        this.state.start('Title');
+        this.state.start('Intro');
     }
 
     addSpriteAnimation(sprite: Phaser.Sprite, animationName: string, frameCount: number): Phaser.Animation {

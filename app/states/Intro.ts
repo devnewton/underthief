@@ -17,5 +17,10 @@ export class Intro extends AbstractState {
         video.play();
         video.addToWorld(this.game.world.centerX, this.game.world.centerY, 0.5, 0.5);
         video.onComplete.add(() => this.game.state.start('Title'));
+        
+        this.game.input.onTap.add(() => {
+            video.stop();
+            this.game.state.start('Title');
+        });
     }
 }

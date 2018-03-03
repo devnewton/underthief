@@ -51,6 +51,8 @@ export class Level extends AbstractState {
         this.game.load.image('house_inside', 'sprites/opengameart/house_inside.png');
         this.game.load.image('misc', 'sprites/opengameart/misc.png');
         this.game.load.image('basket', 'sprites/devnewton/basket.png');
+        this.game.load.audio('level-music', 'musics/opengameart/8-bit-music-pack-loopable/bgm_action_4.mp3')
+        this.game.load.audio('victory-music', 'musics/opengameart/hungry-dino-9-chiptune-tracks-10-sfx/victory.mp3')
     }
 
     init(config: LevelConfig) {
@@ -62,6 +64,8 @@ export class Level extends AbstractState {
 
     create() {
         super.create();
+        this.game.sound.stopAll();
+        this.game.sound.play('level-music', 1, true);
 
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         const map = this.game.add.tilemap('map');
@@ -246,6 +250,8 @@ export class Level extends AbstractState {
             const boysWin = this.braCapturePoints.areAllCaptured();
             this.victory = boysWin || girlsWin;
             if (this.victory) {
+                this.game.sound.stopAll();
+                this.game.sound.play('victory-music', 1, false);
                 this.girlsTeam.forEachAlive((player) => {
                     let emo = new EmotionSprite(this.game, player.key, girlsWin ? 'happy' : 'sad');
                     emo.x = player.x;

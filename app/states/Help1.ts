@@ -16,6 +16,6 @@ export class Help1 extends AbstractState {
     create() {
         super.create();
         this.game.add.image(0, 0, 'help1');
-        new MenuButton(this.game, "Continue", 200, 600, () => this.game.state.start('Help2'));
+        new MenuButton(this.game, "Continue", 200, 610, () => this.game.state.start('Help2'));
     }
 }

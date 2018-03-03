@@ -11,11 +11,14 @@ export class Title extends AbstractState {
     preload() {
         this.game.load.image('school', 'title/school.jpg');
         this.game.load.image('logo', 'title/logo.png');
+        this.game.load.audio('main-music', 'musics/opengameart/hungry-dino-9-chiptune-tracks-10-sfx/main.mp3')
         MenuButton.preload(this.game);
     }
 
     create() {
         super.create();
+        this.game.sound.stopAll();
+        this.game.sound.play('main-music', 1, true);
         this.game.add.image(0, 0, 'school');
         let logo = this.game.add.sprite(this.game.world.centerX, 10, 'logo');
         logo.scale.x = 1.4;

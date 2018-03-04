@@ -48,8 +48,8 @@ export class Level extends AbstractState {
         this.game.load.tilemap('map', 'levels/level1.json', null, Phaser.Tilemap.TILED_JSON);
         this.game.load.image('interior', 'sprites/opengameart/LPC_house_interior/interior.png');
         this.game.load.image('arabic1', 'sprites/opengameart/arabic_set/arabic1.png');
-        this.game.load.image('house_inside', 'sprites/opengameart/house_inside.png');
-        this.game.load.image('misc', 'sprites/opengameart/misc.png');
+        this.game.load.image('house_inside', 'sprites/opengameart/lpc-house-insides/house_inside.png');
+        this.game.load.image('misc', 'sprites/opengameart/misc-32x32-tiles/misc.png');
         this.game.load.image('basket', 'sprites/devnewton/basket.png');
         this.game.load.audio('level-music', 'musics/opengameart/8-bit-music-pack-loopable/bgm_action_4.mp3')
         this.game.load.audio('victory-music', 'musics/opengameart/hungry-dino-9-chiptune-tracks-10-sfx/victory.mp3')

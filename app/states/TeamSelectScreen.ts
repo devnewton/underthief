@@ -1,7 +1,7 @@
 /// <reference path="../../typings/phaser.d.ts"/>
 import { AbstractState } from "./AbstractState";
 import { LevelConfig } from "./Level";
-import { MenuButton } from "../ui/MenuButton";
+import { Menu } from "../ui/Menu";
 import { MenuSelect, MenuSelectOption } from "../ui/MenuSelect";
 import { UnderthiefGame } from "../UnderthiefGame";
 import { ControllerType } from "../utils/Controls";
@@ -13,8 +13,7 @@ export class TeamSelectScreen extends AbstractState {
     }
 
     preload() {
-        MenuButton.preload(this.game);
-        MenuSelect.preload(this.game);
+        Menu.preload(this.game);
         this.game.load.atlasXML('betty', 'sprites/opengameart/betty.png', 'sprites/opengameart/player.xml');
         this.game.load.atlasXML('betty2', 'sprites/opengameart/betty2.png', 'sprites/opengameart/player.xml');
         this.game.load.atlasXML('george', 'sprites/opengameart/george.png', 'sprites/opengameart/player.xml');
@@ -45,6 +44,8 @@ export class TeamSelectScreen extends AbstractState {
         (<UnderthiefGame>this.game).addSpriteAnimation(george2, 'player.wait', 1);
         george2.play('player.wait', 8, true);
 
+        const menu = new Menu(this.game);
+
         let playerOptions = [
             new MenuSelectOption<ControllerType>(ControllerType.CPU, 'CPU'),
             new MenuSelectOption<ControllerType>(ControllerType.KEYBOARD, 'Keyboard'),
@@ -54,10 +55,10 @@ export class TeamSelectScreen extends AbstractState {
             new MenuSelectOption<ControllerType>(ControllerType.PAD4, 'Pad 4')
         ];
 
-        let bettySelect = new MenuSelect<ControllerType>(this.game, 200, 150, playerOptions);
-        let betty2Select = new MenuSelect<ControllerType>(this.game, 200, 250, playerOptions);
-        let georgeSelect = new MenuSelect<ControllerType>(this.game, 200, 350, playerOptions);
-        let george2Select = new MenuSelect<ControllerType>(this.game, 200, 450, playerOptions);
+        let bettySelect = menu.select(200, 150, playerOptions);
+        let betty2Select = menu.select(200, 250, playerOptions);
+        let georgeSelect = menu.select(200, 350, playerOptions);
+        let george2Select = menu.select(200, 450, playerOptions);
 
         switch (this.input.gamepad.padsConnected) {
             case 0:
@@ -82,7 +83,7 @@ export class TeamSelectScreen extends AbstractState {
                 george2Select.setSelectedValue(ControllerType.PAD4);
                 break;
         }
-        new MenuButton(this.game, "Play", 200, 600, () => {
+        menu.button("Play", 200, 600, () => {
             let config = new LevelConfig();
             config.bettyController = bettySelect.getSelectedValue();
             config.betty2Controller = betty2Select.getSelectedValue();

@@ -1,6 +1,6 @@
 /// <reference path="../../typings/phaser.d.ts"/>
 import {AbstractState} from "./AbstractState";
-import {MenuButton} from "../ui/MenuButton";
+import {Menu} from "../ui/Menu";
 
 export class Options extends AbstractState {
 
@@ -9,7 +9,7 @@ export class Options extends AbstractState {
     }
 
     preload() {
-        MenuButton.preload(this.game);
+        Menu.preload(this.game);
     }
 
     create() {
@@ -20,10 +20,11 @@ export class Options extends AbstractState {
         logo.anchor.setTo(0.5, 0);
 
         let y = 100;
-        new MenuButton(this.game, "Keyboard", 200, y += 150, () => this.game.state.start('KeyboardOptions'));
+        const menu = new Menu(this.game);
+        menu.button("Keyboard", 200, y += 150, () => this.game.state.start('KeyboardOptions'));
         if (this.input.gamepad.supported) {
-            new MenuButton(this.game, "Gamepad", 200, y += 150, () => this.game.state.start('GamepadOptions'));
+            menu.button("Gamepad", 200, y += 150, () => this.game.state.start('GamepadOptions'));
         }
-        new MenuButton(this.game, "Back", 200, y += 150, () => this.game.state.start('Title'));
+        menu.button("Back", 200, y += 150, () => this.game.state.start('Title'));
     }
 }

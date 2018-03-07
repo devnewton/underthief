@@ -1,6 +1,6 @@
 /// <reference path="../../typings/phaser.d.ts"/>
 import { AbstractState } from "./AbstractState";
-import { MenuButton } from "../ui/MenuButton";
+import { Menu } from "../ui/Menu";
 
 export class Title extends AbstractState {
 
@@ -12,7 +12,7 @@ export class Title extends AbstractState {
         this.game.load.image('school', 'title/school.jpg');
         this.game.load.image('logo', 'title/logo.png');
         this.game.load.audio('main-music', 'musics/opengameart/hungry-dino-9-chiptune-tracks-10-sfx/main.mp3')
-        MenuButton.preload(this.game);
+        Menu.preload(this.game);
     }
 
     create() {
@@ -25,8 +25,9 @@ export class Title extends AbstractState {
         logo.scale.y = 1.4;
         logo.anchor.setTo(0.5, 0);
 
-        new MenuButton(this.game, "Start", 200, 250, () => this.game.state.start('TeamSelectScreen'));
-        new MenuButton(this.game, "Options", 200, 400, () => this.game.state.start('Options'));
-        new MenuButton(this.game, "Help", 200, 550, () => this.game.state.start('Help1'));
+        const menu = new Menu(this.game);
+        menu.button("Start", 200, 250, () => this.game.state.start('TeamSelectScreen'));
+        menu.button("Options", 200, 400, () => this.game.state.start('Options'));
+        menu.button("Help", 200, 550, () => this.game.state.start('Help1'));
     }
 }

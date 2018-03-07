@@ -1,6 +1,6 @@
 /// <reference path="../../typings/phaser.d.ts"/>
 import {AbstractState} from "./AbstractState";
-import {MenuButton} from "../ui/MenuButton";
+import {Menu} from "../ui/Menu";
 
 export class Help1 extends AbstractState {
 
@@ -10,12 +10,13 @@ export class Help1 extends AbstractState {
 
     preload() {
         this.game.load.image('help1', 'help/help1.png');
-        MenuButton.preload(this.game);
+        Menu.preload(this.game);
     }
 
     create() {
         super.create();
         this.game.add.image(0, 0, 'help1');
-        new MenuButton(this.game, "Continue", 200, 610, () => this.game.state.start('Help2'));
+        const menu = new Menu(this.game);
+        menu.button("Continue", 200, 610, () => this.game.state.start('Help2'));
     }
 }

@@ -1,5 +1,6 @@
 /// <reference path="../../typings/phaser.d.ts"/>
 import {AbstractState} from "./AbstractState";
+import {Menu} from "../ui/Menu";
 import {MenuButton} from "../ui/MenuButton";
 
 export class GamepadOptions extends AbstractState {
@@ -9,7 +10,7 @@ export class GamepadOptions extends AbstractState {
     }
 
     preload() {
-        MenuButton.preload(this.game);
+        Menu.preload(this.game);
     }
 
     create() {
@@ -22,19 +23,20 @@ export class GamepadOptions extends AbstractState {
         let subtitle = this.game.add.text(0, 0, 'Move stick or press button to show gamepad number', { font: "32px monospace", fill: 'white' });
         subtitle.y = this.game.world.height - subtitle.height;
 
-        new GamepadMenuButton(this.input.gamepad.pad1, 0xFF6666, "Gamepad 1", 200, 100, () => {
+        const menu = new Menu(this.game);
+        menu.add(new GamepadMenuButton(this.input.gamepad.pad1, 0xFF6666, "Gamepad 1", 200, 100, () => {
             this.game.state.start('GamepadOptionsLayout', true, false, 1);
-        });
-        new GamepadMenuButton(this.input.gamepad.pad2, 0x66FF66, "Gamepad 2", 200, 200, () => {
+        }));
+        menu.add(new GamepadMenuButton(this.input.gamepad.pad2, 0x66FF66, "Gamepad 2", 200, 200, () => {
             this.game.state.start('GamepadOptionsLayout', true, false, 2);
-        });
-        new GamepadMenuButton(this.input.gamepad.pad3, 0x6666FF, "Gamepad 3", 200, 300, () => {
+        }));
+        menu.add(new GamepadMenuButton(this.input.gamepad.pad3, 0x6666FF, "Gamepad 3", 200, 300, () => {
             this.game.state.start('GamepadOptionsLayout', true, false, 3);
-        });
-        new GamepadMenuButton(this.input.gamepad.pad4, 0xFFFF66, "Gamepad 4", 200, 400, () => {
+        }));
+        menu.add(new GamepadMenuButton(this.input.gamepad.pad4, 0xFFFF66, "Gamepad 4", 200, 400, () => {
             this.game.state.start('GamepadOptionsLayout', true, false, 4);
-        });
-        new MenuButton(this.game, "Back", 200, 550, () => this.game.state.start('Options'));
+        }));
+        menu.button("Back", 200, 550, () => this.game.state.start('Options'));
     }
 }
 

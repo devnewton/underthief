@@ -5,7 +5,7 @@ import { Player } from "../entities/Player";
 import { EmotionSprite } from "../entities/EmotionSprite";
 import { Underwear, UnderwearCapturePoints, UnderwearCaptureCollisionResolver } from "../entities/Underwear";
 import { Team, TeamCollisionResolver } from "../entities/Team";
-import { MenuButton } from "../ui/MenuButton";
+import { Menu } from "../ui/Menu";
 
 import { ControllerType, CPUControls } from "../utils/Controls";
 import { CPU } from "../ia/CPU";
@@ -25,7 +25,7 @@ export class Level extends AbstractState {
     boysTeam: Team;
     braGroup: Phaser.Group;
     boxersGroup: Phaser.Group;
-    menuGroup: Phaser.Group;
+    menu: Menu;
     teamCollisionResolver: TeamCollisionResolver;
     braCapturePoints: UnderwearCapturePoints;
     boxersCapturePoints: UnderwearCapturePoints;
@@ -42,7 +42,7 @@ export class Level extends AbstractState {
         Player.preload(this.game);
         Underwear.preload(this.game);
         EmotionSprite.preload(this.game);
-        MenuButton.preload(this.game);
+        Menu.preload(this.game);
         this.game.load.image('girls-win', 'victory/girls-win.png');
         this.game.load.image('boys-win', 'victory/boys-win.png');
         this.game.load.tilemap('map', 'levels/level1.json', null, Phaser.Tilemap.TILED_JSON);
@@ -186,19 +186,19 @@ export class Level extends AbstractState {
             }
         }, null);
 
-        this.menuGroup = new Phaser.Group(this.game);
-        this.menuGroup.alive = false;
-        this.menuGroup.visible = false;
-        this.menuGroup.add(new MenuButton(this.game, "Continue", 200, 260, () => {
+        this.menu = new Menu(this.game);
+        this.menu.alive = false;
+        this.menu.visible = false;
+        this.menu.button("Continue", 200, 260, () => {
             if (this.victory) {
                 this.game.state.restart(true, false, this.config);
             } else {
-                this.menuGroup.alive = false;
-                this.menuGroup.visible = false;
+                this.menu.alive = false;
+                this.menu.visible = false;
             }
-        }));
-        this.menuGroup.add(new MenuButton(this.game, "Change teams", 200, 410, () => this.game.state.start('TeamSelectScreen', true, false)));
-        this.menuGroup.add(new MenuButton(this.game, "Return to title", 200, 560, () => this.game.state.start('Title', true, false)));
+        });
+        this.menu.button("Change teams", 200, 410, () => this.game.state.start('TeamSelectScreen', true, false));
+        this.menu.button("Return to title", 200, 560, () => this.game.state.start('Title', true, false));
     }
 
     update() {
@@ -229,7 +229,7 @@ export class Level extends AbstractState {
     }
 
     checkMenu(): boolean {
-        if (this.menuGroup.alive) {
+        if (this.menu.alive) {
             return true;
         }
         let isMenuAsked = false;
@@ -275,8 +275,8 @@ export class Level extends AbstractState {
     }
 
     showMenu() {
-        this.menuGroup.alive = true;
-        this.menuGroup.visible = true;
+        this.menu.alive = true;
+        this.menu.visible = true;
     }
 
     render() {

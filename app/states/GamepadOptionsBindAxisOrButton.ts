@@ -1,6 +1,6 @@
 /// <reference path="../../typings/phaser.d.ts"/>
 import { AbstractState } from "./AbstractState";
-import { MenuButton } from "../ui/MenuButton";
+import { Menu } from "../ui/Menu";
 import { UnderthiefGame } from "../UnderthiefGame";
 
 export class GamepadOptionsBindAxisOrButton extends AbstractState {
@@ -23,7 +23,7 @@ export class GamepadOptionsBindAxisOrButton extends AbstractState {
     }
 
     preload() {
-        MenuButton.preload(this.game);
+        Menu.preload(this.game);
     }
 
     init(padIndex: number, binding: number = 0) {
@@ -46,7 +46,8 @@ export class GamepadOptionsBindAxisOrButton extends AbstractState {
         logo.scale.x = 2;
         logo.scale.y = 2;
         logo.anchor.setTo(0.5, 0);
-        new MenuButton(this.game, "Back", 200, 500, () => this.game.state.start('GamepadOptions'));
+        const menu = new Menu(this.game, false);
+        menu.button("Back", 200, 500, () => this.game.state.start('GamepadOptions'));
     }
 
     update() {

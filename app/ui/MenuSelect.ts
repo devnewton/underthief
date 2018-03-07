@@ -40,8 +40,4 @@ export class MenuSelect<T> extends Phaser.Button {
         this.labelText.setText(this.options[this.selectedOption].label);
     }
 
-    static preload(game: Phaser.Game) {
-        game.load.atlasXML('menu-buttons', 'menu/buttons.png', 'menu/buttons.xml');
-    }
-
 }

@@ -1,6 +1,6 @@
 /// <reference path="../../typings/phaser.d.ts"/>
 import {AbstractState} from "./AbstractState";
-import {MenuButton} from "../ui/MenuButton";
+import {Menu} from "../ui/Menu";
 import { UnderthiefGame } from "../UnderthiefGame";
 
 
@@ -11,7 +11,7 @@ export class KeyboardOptions extends AbstractState {
     }
 
     preload() {
-        MenuButton.preload(this.game);
+        Menu.preload(this.game);
     }
 
     create() {
@@ -21,22 +21,23 @@ export class KeyboardOptions extends AbstractState {
         logo.scale.y = 2;
         logo.anchor.setTo(0.5, 0);
 
-        new MenuButton(this.game, "Azerty zsqd hjk", 200, 100, () => {
+        const menu = new Menu(this.game);
+        menu.button("Azerty zsqd hjk", 200, 100, () => {
             (<UnderthiefGame>this.game).controllers.getKeyboard().useAzertyLayout();
             this.game.state.start('Options');
         });
-        new MenuButton(this.game, "Qwerty wsad hjk", 200, 200, () => {
+        menu.button("Qwerty wsad hjk", 200, 200, () => {
             (<UnderthiefGame>this.game).controllers.getKeyboard().useQwertyLayout();
             this.game.state.start('Options');
         });
-        new MenuButton(this.game, "Others ⬆⬇⬅➡ ⎇␣⎈", 200, 300, () => {
+        menu.button("Others ⬆⬇⬅➡ ⎇␣⎈", 200, 300, () => {
             (<UnderthiefGame>this.game).controllers.getKeyboard().useOtherKeyboardLayout();
             this.game.state.start('Options');
         });
-        new MenuButton(this.game, "Custom", 200, 400, () => {
+        menu.button("Custom", 200, 400, () => {
             (<UnderthiefGame>this.game).controllers.getKeyboard().useOtherKeyboardLayout();
             this.game.state.start('KeyboardOptionsBindKey', true, false);
         });
-        new MenuButton(this.game, "Back", 200, 600, () => this.game.state.start('Options'));
+        menu.button("Back", 200, 600, () => this.game.state.start('Options'));
     }
 }

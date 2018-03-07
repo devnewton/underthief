@@ -1,6 +1,6 @@
 /// <reference path="../../typings/phaser.d.ts"/>
 import { AbstractState } from "./AbstractState";
-import { MenuButton } from "../ui/MenuButton";
+import { Menu } from "../ui/Menu";
 import { UnderthiefGame } from "../UnderthiefGame";
 
 
@@ -23,7 +23,7 @@ export class KeyboardOptionsBindKey extends AbstractState {
     }
 
     preload() {
-        MenuButton.preload(this.game);
+        Menu.preload(this.game);
     }
 
     init(binding: number = 0) {
@@ -42,7 +42,8 @@ export class KeyboardOptionsBindKey extends AbstractState {
         logo.scale.x = 2;
         logo.scale.y = 2;
         logo.anchor.setTo(0.5, 0);
-        new MenuButton(this.game, "Back", 200, 600, () => this.game.state.start('KeyboardOptions'));
+        const menu = new Menu(this.game, false);
+        menu.button("Back", 200, 600, () => this.game.state.start('KeyboardOptions'));
     }
 
     update() {

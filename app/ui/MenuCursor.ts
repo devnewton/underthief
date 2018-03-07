@@ -7,9 +7,10 @@ interface Togglable {
 export class MenuCursor extends Phaser.Text {
     private buttons: Phaser.Group;
     private currentButton = 0;
+    waitUntil: number = -1;
 
     constructor(game: Phaser.Game, buttons: Phaser.Group) {
-        super(game, 0, 0, '☞', { font: "64px monospace", fill: 'white' });
+        super(game, 0, 0, '👉', { font: "64px monospace", fontWeight: 'bold', fill: 'white' });
         this.buttons = buttons;
         this.visible = false;
         game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(() => this.moveToButton(-1), null);
@@ -34,26 +35,33 @@ export class MenuCursor extends Phaser.Text {
 
     update() {
         super.update();
+        if(this.game.time.time > this.waitUntil && this.processPad()) {
+            this.waitUntil = this.game.time.time + 230;
+        }
+    }
+
+    processPad(): boolean {
         const pad = this.firstPadConnected();
         if (pad) {
             for (let b = 0; b < 16; ++b) {
                 let button = pad.getButton(b);
                 if (button && button.isDown) {
                     this.activateButton();
-                    return;
+                    return true;
                 }
             }
             for (let a = 0; a < 16; ++a) {
                 const axis = pad.axis(a);
                 if (axis > pad.deadZone) {
                     this.moveToButton(1);
-                    return;
+                    return true;
                 } else if (axis < -pad.deadZone) {
                     this.moveToButton(-1);
-                    return;
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     moveToButton(direction: number) {

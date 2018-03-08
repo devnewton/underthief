@@ -17,6 +17,10 @@ export class Menu extends Phaser.Group {
         game.add.existing(this);
     }
 
+    addButton(button: MenuButton) {
+        this.buttons.add(button);
+    }
+
     button(label: string, x: number, y: number, callback: Function) {
         this.buttons.add(new MenuButton(this.game, label, x, y, callback));
     }

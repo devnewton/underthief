@@ -24,16 +24,16 @@ export class GamepadOptions extends AbstractState {
         subtitle.y = this.game.world.height - subtitle.height;
 
         const menu = new Menu(this.game);
-        menu.add(new GamepadMenuButton(this.input.gamepad.pad1, 0xFF6666, "Gamepad 1", 200, 100, () => {
+        menu.addButton(new GamepadMenuButton(this.input.gamepad.pad1, 0xFF6666, "Gamepad 1", 200, 100, () => {
             this.game.state.start('GamepadOptionsLayout', true, false, 1);
         }));
-        menu.add(new GamepadMenuButton(this.input.gamepad.pad2, 0x66FF66, "Gamepad 2", 200, 200, () => {
+        menu.addButton(new GamepadMenuButton(this.input.gamepad.pad2, 0x66FF66, "Gamepad 2", 200, 200, () => {
             this.game.state.start('GamepadOptionsLayout', true, false, 2);
         }));
-        menu.add(new GamepadMenuButton(this.input.gamepad.pad3, 0x6666FF, "Gamepad 3", 200, 300, () => {
+        menu.addButton(new GamepadMenuButton(this.input.gamepad.pad3, 0x6666FF, "Gamepad 3", 200, 300, () => {
             this.game.state.start('GamepadOptionsLayout', true, false, 3);
         }));
-        menu.add(new GamepadMenuButton(this.input.gamepad.pad4, 0xFFFF66, "Gamepad 4", 200, 400, () => {
+        menu.addButton(new GamepadMenuButton(this.input.gamepad.pad4, 0xFFFF66, "Gamepad 4", 200, 400, () => {
             this.game.state.start('GamepadOptionsLayout', true, false, 4);
         }));
         menu.button("Back", 200, 550, () => this.game.state.start('Options'));

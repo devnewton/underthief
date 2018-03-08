@@ -35,7 +35,7 @@ export class MenuCursor extends Phaser.Text {
 
     update() {
         super.update();
-        if(this.game.time.time > this.waitUntil && this.processPad()) {
+        if (this.parent.visible && this.game.time.time > this.waitUntil && this.processPad()) {
             this.waitUntil = this.game.time.time + 230;
         }
     }
@@ -65,7 +65,7 @@ export class MenuCursor extends Phaser.Text {
     }
 
     moveToButton(direction: number) {
-        if (this.buttons.children.length > 0) {
+        if (this.parent.visible && this.buttons.children.length > 0) {
             this.visible = true;
             this.currentButton += direction;
             if (this.currentButton >= this.buttons.length) {
@@ -80,12 +80,14 @@ export class MenuCursor extends Phaser.Text {
         }
     }
     activateButton() {
-        if (!this.visible) {
-            this.moveToButton(0);
-        } else if (this.buttons.children.length > 0) {
-            const button = <Togglable>this.buttons.children[this.currentButton];
-            if (button.toggle) {
-                button.toggle();
+        if (this.parent.visible) {
+            if (!this.visible) {
+                this.moveToButton(0);
+            } else if (this.buttons.children.length > 0) {
+                const button = <Togglable>this.buttons.children[this.currentButton];
+                if (button.toggle) {
+                    button.toggle();
+                }
             }
         }
     }

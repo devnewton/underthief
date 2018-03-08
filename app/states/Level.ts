@@ -186,7 +186,7 @@ export class Level extends AbstractState {
             }
         }, null);
 
-        this.menu = new Menu(this.game, false);
+        this.menu = new Menu(this.game);
         this.menu.alive = false;
         this.menu.visible = false;
         this.menu.button("Continue", 200, 260, () => {

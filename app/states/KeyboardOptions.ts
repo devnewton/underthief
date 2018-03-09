@@ -22,16 +22,16 @@ export class KeyboardOptions extends AbstractState {
         logo.anchor.setTo(0.5, 0);
 
         const menu = new Menu(this.game);
-        menu.button("Azerty zsqd hjk", 200, 100, () => {
+        menu.button("⬆⬇⬅➡ shift ctrl", 200, 300, () => {
+            (<UnderthiefGame>this.game).controllers.getKeyboard().useOtherKeyboardLayout();
+            this.game.state.start('Options');
+        });
+        menu.button("Azerty zsqd jk", 200, 100, () => {
             (<UnderthiefGame>this.game).controllers.getKeyboard().useAzertyLayout();
             this.game.state.start('Options');
         });
-        menu.button("Qwerty wsad hjk", 200, 200, () => {
+        menu.button("Qwerty wsad jk", 200, 200, () => {
             (<UnderthiefGame>this.game).controllers.getKeyboard().useQwertyLayout();
-            this.game.state.start('Options');
-        });
-        menu.button("Others ⬆⬇⬅➡ ⎇␣⎈", 200, 300, () => {
-            (<UnderthiefGame>this.game).controllers.getKeyboard().useOtherKeyboardLayout();
             this.game.state.start('Options');
         });
         menu.button("Custom", 200, 400, () => {

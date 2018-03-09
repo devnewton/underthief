@@ -124,14 +124,14 @@ export class KeyboardControls extends AbstractControls {
     setupKeyboardLayout() {
         this.kb = this.game.input.keyboard;
         let layout = localStorage.getItem('keyboard.layout');
-        if (null == layout || layout == 'azerty') {
+        if (layout == 'azerty') {
             this.useAzertyLayout();
         } else if (layout == 'qwerty') {
             this.useQwertyLayout();
-        } else if (layout == 'other') {
-            this.useOtherKeyboardLayout();
         } else if (layout == 'custom') {
             this.useCustomKeyboardLayout();
+        } else {
+            this.useOtherKeyboardLayout();
         }
     }
 
@@ -162,8 +162,8 @@ export class KeyboardControls extends AbstractControls {
         this.keyCodeMoveDown = Phaser.KeyCode.DOWN;
         this.keyCodeMoveLeft = Phaser.KeyCode.LEFT;
         this.keyCodeMoveRight = Phaser.KeyCode.RIGHT;
-        this.keyCodeHammerTime = Phaser.KeyCode.ALT;
-        this.keyCodeDash = Phaser.KeyCode.SHIFT;
+        this.keyCodeHammerTime = Phaser.KeyCode.SHIFT;
+        this.keyCodeDash = Phaser.KeyCode.CONTROL;
         this.keyCodeMenu = Phaser.KeyCode.ESC;
         localStorage.setItem('keyboard.layout', 'other');
     }
@@ -173,7 +173,7 @@ export class KeyboardControls extends AbstractControls {
         this.keyCodeMoveDown = this.readNumberFromLocalStorage('keyboard.layout.custom.moveDown', Phaser.KeyCode.DOWN);
         this.keyCodeMoveLeft = this.readNumberFromLocalStorage('keyboard.layout.custom.moveLeft', Phaser.KeyCode.LEFT);
         this.keyCodeMoveRight = this.readNumberFromLocalStorage('keyboard.layout.custom.moveRight', Phaser.KeyCode.RIGHT);
-        this.keyCodeHammerTime = this.readNumberFromLocalStorage('keyboard.layout.custom.hammer', Phaser.KeyCode.ALT);
+        this.keyCodeHammerTime = this.readNumberFromLocalStorage('keyboard.layout.custom.hammer', Phaser.KeyCode.SHIFT);
         this.keyCodeDash = this.readNumberFromLocalStorage('keyboard.layout.custom.dash', Phaser.KeyCode.CONTROL);
         this.keyCodeMenu = this.readNumberFromLocalStorage('keyboard.layout.custom.menu', Phaser.KeyCode.ESC);
         localStorage.setItem('keyboard.layout', 'custom');

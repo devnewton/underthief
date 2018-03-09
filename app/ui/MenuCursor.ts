@@ -66,8 +66,11 @@ export class MenuCursor extends Phaser.Text {
 
     moveToButton(direction: number) {
         if (this.parent.visible && this.buttons.children.length > 0) {
-            this.visible = true;
-            this.currentButton += direction;
+            if (!this.visible) {
+                this.visible = true;
+            } else {
+                this.currentButton += direction;
+            }
             if (this.currentButton >= this.buttons.length) {
                 this.currentButton = 0;
             }

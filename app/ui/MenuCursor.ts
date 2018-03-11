@@ -43,14 +43,14 @@ export class MenuCursor extends Phaser.Text {
     processPad(): boolean {
         const pad = this.firstPadConnected();
         if (pad) {
-            for (let b = 0; b < 16; ++b) {
+            for (let b = 0; b < 4; ++b) {
                 let button = pad.getButton(b);
                 if (button && button.isDown) {
                     this.activateButton();
                     return true;
                 }
             }
-            for (let a = 0; a < 16; ++a) {
+            for (let a = 0; a < 2; ++a) {
                 const axis = pad.axis(a);
                 if (axis > pad.deadZone) {
                     this.moveToButton(1);

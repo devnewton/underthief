@@ -1,7 +1,9 @@
 /// <reference path="../../typings/phaser.d.ts"/>
 import { AbstractState } from "./AbstractState";
 import { Menu } from "../ui/Menu";
+import { MenuMiniButton } from "../ui/MenuMiniButton";
 import { UnderthiefGame } from "../UnderthiefGame";
+import { GamepadUtils } from "../utils/GamepadUtils";
 
 export class GamepadOptionsBindAxisOrButton extends AbstractState {
 
@@ -16,7 +18,8 @@ export class GamepadOptionsBindAxisOrButton extends AbstractState {
     currentBinding: number = 0;
     pad: Phaser.SinglePad;
     padIndex = 1;
-    waitForNoInput: number;
+    axisButtons: Phaser.Group;
+    buttonsButtons: Phaser.Group;
 
     constructor() {
         super();
@@ -24,6 +27,7 @@ export class GamepadOptionsBindAxisOrButton extends AbstractState {
 
     preload() {
         Menu.preload(this.game);
+        MenuMiniButton.preload(this.game);
     }
 
     init(padIndex: number, binding: number = 0) {
@@ -37,7 +41,6 @@ export class GamepadOptionsBindAxisOrButton extends AbstractState {
         } else {
             this.currentBinding = binding;
         }
-        this.waitForNoInput = 60;
     }
 
     create() {
@@ -47,54 +50,96 @@ export class GamepadOptionsBindAxisOrButton extends AbstractState {
         logo.scale.y = 2;
         logo.anchor.setTo(0.5, 0);
         const menu = new Menu(this.game, false);
-        menu.button("Back", 200, 500, () => this.game.state.start('GamepadOptions'));
+        menu.button("Back", 200, 600, () => this.game.state.start('GamepadOptions'));
+        this.createAxisButtons();
+        this.createButtonsButtons();
+
+    }
+
+    createAxisButtons() {
+        this.axisButtons = this.game.add.group();
+        this.axisButtons.visible = false;
+        const nbButtonsPerColumn = Math.ceil(Math.sqrt(GamepadUtils.NB_AXIS));
+        for (let y = 0, axisCode =0; axisCode< GamepadUtils.NB_AXIS; ++y) {
+            for (let x = 0; x < nbButtonsPerColumn; ++x) {
+                const buttonAxisCode = axisCode++;
+                let miniButton = new AxisButton(this.game, this.pad, buttonAxisCode, 250 + x * 200, 100 + y * 120, () => this.bindAxis(buttonAxisCode));
+                this.axisButtons.add(miniButton);
+            }
+        }
+    }
+
+    createButtonsButtons() {
+        this.buttonsButtons = this.game.add.group();
+        this.buttonsButtons.visible = false;
+        const nbButtonsPerColumn = Math.ceil(Math.sqrt(GamepadUtils.NB_BUTTONS));
+        for (let y = 0, buttonCode =0; buttonCode< GamepadUtils.NB_BUTTONS; ++y) {
+            for (let x = 0; x < nbButtonsPerColumn; ++x) {
+                const buttonButtonCode = buttonCode++;
+                let miniButton = new ButtonButton(this.game, this.pad, buttonButtonCode, 250 + x * 200, 100 + y * 120, () => this.bindButton(buttonButtonCode));
+                this.buttonsButtons.add(miniButton);
+            }
+        }
     }
 
     update() {
         super.update();
-
         if (this.bindings[this.currentBinding].localStorageKeySuffix.match(/axis/gi)) {
-            this.detectAxis();
+            this.axisButtons.visible = true;
+            this.buttonsButtons.visible = false;
         } else {
-            this.detectButton();
+            this.axisButtons.visible = false;
+            this.buttonsButtons.visible = true;
         }
     }
 
-    detectAxis() {
-        let activationZone = Math.max(0.99, Math.min(0.8, 4 * this.pad.deadZone));
-        for (var k in Phaser.Gamepad) {
-            if (k.startsWith('AXIS_')) {
-                let axisCode = Phaser.Gamepad[k];
-                if (Math.abs(this.pad.axis(axisCode)) >= activationZone) {
-                    if (this.waitForNoInput > 0) {
-                        return;
-                    } else {
-                        localStorage.setItem('gamepad' + this.padIndex + '.layout.custom.' + this.bindings[this.currentBinding].localStorageKeySuffix, axisCode);
-                        this.game.state.start('GamepadOptionsBindAxis', true, false, this.padIndex, this.currentBinding + 1);
-                        return;
-                    }
-                }
-            }
-        }
-        this.waitForNoInput--;
+    bindAxis(axisCode: number) {
+        localStorage.setItem('gamepad' + this.padIndex + '.layout.custom.' + this.bindings[this.currentBinding].localStorageKeySuffix, '' + axisCode);
+        this.game.state.start('GamepadOptionsBindAxis', true, false, this.padIndex, this.currentBinding + 1);
     }
 
-    detectButton() {
-        let activationZone = Math.max(0.99, Math.min(0.8, 4 * this.pad.deadZone));
-        for (var k in Phaser.Gamepad) {
-            if (k.startsWith('BUTTON_')) {
-                let buttonCode = Phaser.Gamepad[k];
-                if (Math.abs(this.pad.buttonValue(buttonCode)) >= activationZone) {
-                    if (this.waitForNoInput > 0) {
-                        return;
-                    } else {
-                        localStorage.setItem('gamepad' + this.padIndex + '.layout.custom.' + this.bindings[this.currentBinding].localStorageKeySuffix, buttonCode);
-                        this.game.state.start('GamepadOptionsBindAxis', true, false, this.padIndex, this.currentBinding + 1);
-                        return;
-                    }
-                }
-            }
-        }
-        this.waitForNoInput--;
+    bindButton(buttonCode: number) {
+        localStorage.setItem('gamepad' + this.padIndex + '.layout.custom.' + this.bindings[this.currentBinding].localStorageKeySuffix, '' + buttonCode);
+        this.game.state.start('GamepadOptionsBindAxis', true, false, this.padIndex, this.currentBinding + 1);
     }
+}
+
+class AxisButton extends MenuMiniButton {
+    pad: Phaser.SinglePad;
+    axisCode: number;
+    constructor(game: Phaser.Game, pad: Phaser.SinglePad, axisCode: number, x: number, y: number, callback: Function) {
+        super(game, axisCode.toString(), x, y, callback);
+        this.pad = pad;
+        this.axisCode = axisCode;
+    }
+    update() {
+        super.update();
+
+        if (Math.abs(this.pad.axis(this.axisCode)) > this.pad.deadZone) {
+            this.tint = 0xFF6666;
+        } else {
+            this.tint = 0xFFFFFF;
+        }
+    }
+
+}
+
+class ButtonButton extends MenuMiniButton {
+    pad: Phaser.SinglePad;
+    buttonCode: number;
+    constructor(game: Phaser.Game, pad: Phaser.SinglePad, buttonCode: number, x: number, y: number, callback: Function) {
+        super(game, buttonCode.toString(), x, y, callback);
+        this.pad = pad;
+        this.buttonCode = buttonCode;
+    }
+    update() {
+        super.update();
+
+        if (this.pad.isDown(this.buttonCode)) {
+            this.tint = 0xFF6666;
+        } else {
+            this.tint = 0xFFFFFF;
+        }
+    }
+
 }

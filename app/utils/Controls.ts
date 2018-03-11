@@ -272,7 +272,7 @@ export class PadControls extends AbstractControls {
         this.moveYAxis = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.moveYAxis', Phaser.Gamepad.XBOX360_STICK_LEFT_Y);
         this.dashButton = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.dashButton', Phaser.Gamepad.XBOX360_X);
         this.menuButton = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.menuButton', Phaser.Gamepad.XBOX360_START);
-        this.hammerTimeButton = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.hammerTimeButton', Phaser.Gamepad.XBOX360_A);
+        this.hammerTimeButton = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.hammerButton', Phaser.Gamepad.XBOX360_A);
         localStorage.setItem('gamepad' + padIndex + '.layout', 'custom');
     }
 

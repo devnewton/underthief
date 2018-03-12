@@ -51,7 +51,7 @@ export class TeamSelectScreen extends AbstractState {
             new MenuSelectOption<ControllerType>(ControllerType.KEYBOARD, 'Keyboard'),
             new MenuSelectOption<ControllerType>(ControllerType.PAD1, 'Pad 1'),
             new MenuSelectOption<ControllerType>(ControllerType.PAD2, 'Pad 2'),
-            new MenuSelectOption<ControllerType>(ControllerType.PAD4, 'Pad 3'),
+            new MenuSelectOption<ControllerType>(ControllerType.PAD3, 'Pad 3'),
             new MenuSelectOption<ControllerType>(ControllerType.PAD4, 'Pad 4')
         ];
 

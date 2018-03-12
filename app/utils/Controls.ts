@@ -2,11 +2,11 @@
 
 export enum ControllerType {
     CPU = -1,
-    KEYBOARD,
-    PAD1,
-    PAD2,
-    PAD3,
-    PAD4
+    KEYBOARD = 0,
+    PAD1 = 1,
+    PAD2 = 2,
+    PAD3 = 3,
+    PAD4 = 4
 }
 
 export class Controllers {

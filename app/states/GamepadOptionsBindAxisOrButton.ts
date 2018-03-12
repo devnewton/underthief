@@ -31,8 +31,7 @@ export class GamepadOptionsBindAxisOrButton extends AbstractState {
     }
 
     init(padIndex: number, binding: number = 0) {
-        padIndex = padIndex || 1;
-        this.padIndex = 1;
+        this.padIndex = padIndex || 1;
         this.pad = this.input.gamepad['pad' + this.padIndex];
         if (binding >= this.bindings.length) {
             this.currentBinding = 0;
@@ -116,9 +115,9 @@ class AxisButton extends MenuMiniButton {
         super.update();
 
         if (Math.abs(this.pad.axis(this.axisCode)) > this.pad.deadZone) {
-            this.tint = 0xFF6666;
+            this.labelText.tint = GamepadUtils.gamepadColor(this.pad);
         } else {
-            this.tint = 0xFFFFFF;
+            this.labelText.tint = 0xFFFFFF;
         }
     }
 
@@ -136,9 +135,9 @@ class ButtonButton extends MenuMiniButton {
         super.update();
 
         if (this.pad.isDown(this.buttonCode)) {
-            this.tint = 0xFF6666;
+            this.labelText.tint = GamepadUtils.gamepadColor(this.pad);
         } else {
-            this.tint = 0xFFFFFF;
+            this.labelText.tint = 0xFFFFFF;
         }
     }
 

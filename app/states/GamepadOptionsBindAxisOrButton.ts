@@ -8,11 +8,11 @@ import { GamepadUtils } from "../utils/GamepadUtils";
 export class GamepadOptionsBindAxisOrButton extends AbstractState {
 
     bindingsDescription = [
-        { label: 'Pull move X axis', localStorageKeySuffix: 'moveXAxis' },
-        { label: 'Pull move Y axis', localStorageKeySuffix: 'moveYAxis' },
-        { label: 'Press hammer button', localStorageKeySuffix: 'hammerButton' },
-        { label: 'Press dash button', localStorageKeySuffix: 'dashButton' },
-        { label: 'Press menu button', localStorageKeySuffix: 'menuButton' }
+        { label: 'Pull move X axis', localStorageKey: 'moveXAxis' },
+        { label: 'Pull move Y axis', localStorageKey: 'moveYAxis' },
+        { label: 'Press hammer button', localStorageKey: 'hammerButton' },
+        { label: 'Press dash button', localStorageKey: 'dashButton' },
+        { label: 'Press menu button', localStorageKey: 'menuButton' }
     ];
 
     currentBinding: number = 0;
@@ -37,6 +37,7 @@ export class GamepadOptionsBindAxisOrButton extends AbstractState {
         if (binding >= this.bindingsDescription.length) {
             this.currentBinding = 0;
             localStorage.setItem('gamepad.' + GamepadUtils.gamepadId(this.pad) + '.layout', JSON.stringify(this.bindings));
+            (this.game as UnderthiefGame).controllers.updatePadLayout();
             this.game.state.start('GamepadOptions');
         } else {
             this.currentBinding = binding;
@@ -84,7 +85,7 @@ export class GamepadOptionsBindAxisOrButton extends AbstractState {
 
     update() {
         super.update();
-        if (this.bindingsDescription[this.currentBinding].localStorageKeySuffix.match(/axis/gi)) {
+        if (this.bindingsDescription[this.currentBinding].localStorageKey.match(/axis/gi)) {
             this.axisButtons.visible = true;
             this.buttonsButtons.visible = false;
         } else {
@@ -94,13 +95,13 @@ export class GamepadOptionsBindAxisOrButton extends AbstractState {
     }
 
     bindAxis(axisCode: number) {
-        this.bindings[this.bindingsDescription[this.currentBinding].localStorageKeySuffix] = axisCode;
-        this.game.state.start('GamepadOptionsBindAxisOrButton', true, false, this.padIndex, this.currentBinding + 1);
+        this.bindings[this.bindingsDescription[this.currentBinding].localStorageKey] = axisCode;
+        this.game.state.start('GamepadOptionsBindAxisOrButton', true, false, this.padIndex, this.currentBinding + 1, this.bindings);
     }
 
     bindButton(buttonCode: number) {
-        this.bindings[this.bindingsDescription[this.currentBinding].localStorageKeySuffix] = buttonCode;
-        this.game.state.start('GamepadOptionsBindAxisOrButton', true, false, this.padIndex, this.currentBinding + 1);
+        this.bindings[this.bindingsDescription[this.currentBinding].localStorageKey] = buttonCode;
+        this.game.state.start('GamepadOptionsBindAxisOrButton', true, false, this.padIndex, this.currentBinding + 1, this.bindings);
     }
 }
 

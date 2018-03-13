@@ -15,6 +15,7 @@ export class Controllers {
     controllers: Array<AbstractControls>;
 
     constructor(game: Phaser.Game) {
+        game.input.gamepad.start();
         this.controllers = [
             new KeyboardControls(game),
             new PadControls(game, 1),
@@ -39,6 +40,12 @@ export class Controllers {
 
     getPad(padIndex: number): PadControls {
         return this.controllers[padIndex] as PadControls;
+    }
+
+    updatePadLayout() {
+        for(let i = 1; i<4; ++i) {
+            (<PadControls>this.controllers[i]).updatePadLayout();
+        }
     }
 }
 
@@ -127,22 +134,17 @@ export class KeyboardControls extends AbstractControls {
     constructor(game: Phaser.Game) {
         super();
         this.game = game;
-        game.input.gamepad.start();
-        this.setupKeyboardLayout(localStorage.getItem('keyboard.layout'));
-        window.addEventListener('storage', (e) => {
-            if (e.key == 'keyboard.layout') {
-                this.setupKeyboardLayout(e.newValue);
-            }
-        });
+        this.setupKeyboardLayout();
     }
 
-    setupKeyboardLayout(layout: string) {
+    setupKeyboardLayout() {
+        const layout = localStorage.getItem('keyboard.layout');
         this.kb = this.game.input.keyboard;
         try {
             let mapping: KeyboardControlsMapping = JSON.parse(layout) || {};
             this.keyCodeMoveUp = mapping.moveUp || Phaser.KeyCode.UP;
             this.keyCodeMoveDown = mapping.moveDown || Phaser.KeyCode.DOWN;
-            this.keyCodeMoveLeft = mapping.moveDown || Phaser.KeyCode.LEFT;
+            this.keyCodeMoveLeft = mapping.moveLeft || Phaser.KeyCode.LEFT;
             this.keyCodeMoveRight = mapping.moveRight || Phaser.KeyCode.RIGHT;
             this.keyCodeHammerTime = mapping.hammer || Phaser.KeyCode.SHIFT;
             this.keyCodeDash = mapping.dash || Phaser.KeyCode.CONTROL;
@@ -260,13 +262,11 @@ export class PadControls extends AbstractControls {
     constructor(game: Phaser.Game, padIndex: number) {
         super();
         this.game = game;
-        game.input.gamepad.start();
         this.padIndex = padIndex;
-        window.addEventListener('storage', (e) => {
-            if (e.key.startsWith('gamepad.') && e.key.endsWith('.layout')) {
-                this.pad = null;
-            }
-        });
+    }
+
+    updatePadLayout() {
+        this.pad = null;
     }
 
     private checkPad(): boolean {

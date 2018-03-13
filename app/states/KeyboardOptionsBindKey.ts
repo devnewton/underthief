@@ -42,7 +42,7 @@ export class KeyboardOptionsBindKey extends AbstractState {
         logo.scale.x = 2;
         logo.scale.y = 2;
         logo.anchor.setTo(0.5, 0);
-        const menu = new Menu(this.game, false);
+        const menu = new Menu(this.game).disableKeyboardCursor();
         menu.button("Back", 200, 600, () => this.game.state.start('KeyboardOptions'));
     }
 

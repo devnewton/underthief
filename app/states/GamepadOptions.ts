@@ -25,7 +25,7 @@ export class GamepadOptions extends AbstractState {
         let subtitle = this.game.add.text(0, 0, 'Move stick or press button to show gamepad number', { font: "32px monospace", fill: 'white' });
         subtitle.y = this.game.world.height - subtitle.height;
 
-        const menu = new Menu(this.game);
+        const menu = new Menu(this.game).disableGamepadCursor();
         menu.addButton(new GamepadMenuButton(this.input.gamepad.pad1, "Gamepad 1", 200, 100, () => {
             this.game.state.start('GamepadOptionsLayout', true, false, 1);
         }));

@@ -25,7 +25,7 @@ export class GamepadOptionsLayout extends AbstractState {
         title.scale.y = 2;
         title.anchor.setTo(0.5, 0);
 
-        const menu = new Menu(this.game);
+        const menu = new Menu(this.game).disableGamepadCursor();
         menu.button("Xbox", 200, 200, () => {
             (this.game as UnderthiefGame).controllers.getPad(this.padIndex).useXboxLayout(this.padIndex);
             this.game.state.start('Options');

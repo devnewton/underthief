@@ -6,15 +6,25 @@ import { MenuSelect, MenuSelectOption } from "./MenuSelect";
 
 export class Menu extends Phaser.Group {
     buttons: Phaser.Group;
-    constructor(game: Phaser.Game, enableCursor = true) {
+    menuCursor: MenuCursor;
+
+    constructor(game: Phaser.Game) {
         super(game);
         this.buttons = game.add.group();
         this.add(this.buttons);
-        if(enableCursor) {
-            const cursor = new MenuCursor(game, this.buttons);
-            this.add(cursor);
-        }
+        this.menuCursor = new MenuCursor(game, this.buttons);
+        this.add(this.menuCursor);
         game.add.existing(this);
+    }
+
+    disableGamepadCursor(): Menu {
+        this.menuCursor.gamepadCursor = false;
+        return this;
+    }
+
+    disableKeyboardCursor(): Menu {
+        this.menuCursor.gamepadCursor = false;
+        return this;
     }
 
     addButton(button: MenuButton) {
@@ -25,7 +35,7 @@ export class Menu extends Phaser.Group {
         this.buttons.add(new MenuButton(this.game, label, x, y, callback));
     }
 
-    select<T>(x: number, y: number, options: Array<MenuSelectOption<T>>): MenuSelect<T>  {
+    select<T>(x: number, y: number, options: Array<MenuSelectOption<T>>): MenuSelect<T> {
         const select = new MenuSelect(this.game, x, y, options);
         this.buttons.add(select);
         return select;

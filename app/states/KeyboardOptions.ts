@@ -21,7 +21,7 @@ export class KeyboardOptions extends AbstractState {
         logo.scale.y = 2;
         logo.anchor.setTo(0.5, 0);
 
-        const menu = new Menu(this.game);
+        const menu = new Menu(this.game).disableKeyboardCursor();
         menu.button("⬆⬇⬅➡ shift ctrl", 200, 300, () => {
             (<UnderthiefGame>this.game).controllers.getKeyboard().useOtherKeyboardLayout();
             this.game.state.start('Options');

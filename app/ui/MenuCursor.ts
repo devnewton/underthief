@@ -8,14 +8,13 @@ export class MenuCursor extends Phaser.Text {
     private buttons: Phaser.Group;
     private currentButton = 0;
     waitUntil: number = -1;
+    keyboardCursor = true;
+    gamepadCursor = true;
 
     constructor(game: Phaser.Game, buttons: Phaser.Group) {
         super(game, 0, 0, '👉', { font: "64px monospace", fontWeight: 'bold', fill: 'white' });
         this.buttons = buttons;
         this.visible = false;
-        game.input.keyboard.addKey(Phaser.Keyboard.UP).onDown.add(() => this.moveToButton(-1), null);
-        game.input.keyboard.addKey(Phaser.Keyboard.DOWN).onDown.add(() => this.moveToButton(1), null);
-        game.input.keyboard.addKey(Phaser.Keyboard.ENTER).onDown.add(() => this.activateButton(), null);
     }
 
     firstPadConnected(): Phaser.SinglePad {
@@ -35,29 +34,49 @@ export class MenuCursor extends Phaser.Text {
 
     update() {
         super.update();
-        if (this.parent.visible && this.game.time.time > this.waitUntil && this.processPad()) {
+        if (this.parent.visible && this.game.time.time > this.waitUntil && (this.processPad() || this.processKeyboard())) {
             this.waitUntil = this.game.time.time + 230;
         }
     }
 
-    processPad(): boolean {
-        const pad = this.firstPadConnected();
-        if (pad) {
-            for (let b = 0; b < 4; ++b) {
-                let button = pad.getButton(b);
-                if (button && button.isDown) {
-                    this.activateButton();
-                    return true;
-                }
+    processKeyboard(): boolean {
+        if (this.keyboardCursor) {
+            if (this.game.input.keyboard.isDown(Phaser.Keyboard.UP)) {
+                this.moveToButton(-1);
+                return true;
             }
-            for (let a = 0; a < 2; ++a) {
-                const axis = pad.axis(a);
-                if (axis > pad.deadZone) {
-                    this.moveToButton(1);
-                    return true;
-                } else if (axis < -pad.deadZone) {
-                    this.moveToButton(-1);
-                    return true;
+            if (this.game.input.keyboard.isDown(Phaser.Keyboard.DOWN)) {
+                this.moveToButton(1);
+                return true;
+            }
+            if (this.game.input.keyboard.isDown(Phaser.Keyboard.ENTER)) {
+                this.activateButton();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    processPad(): boolean {
+        if (this.gamepadCursor) {
+            const pad = this.firstPadConnected();
+            if (pad) {
+                for (let b = 0; b < 4; ++b) {
+                    let button = pad.getButton(b);
+                    if (button && button.isDown) {
+                        this.activateButton();
+                        return true;
+                    }
+                }
+                for (let a = 0; a < 2; ++a) {
+                    const axis = pad.axis(a);
+                    if (axis > pad.deadZone) {
+                        this.moveToButton(1);
+                        return true;
+                    } else if (axis < -pad.deadZone) {
+                        this.moveToButton(-1);
+                        return true;
+                    }
                 }
             }
         }

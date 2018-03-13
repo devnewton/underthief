@@ -103,6 +103,16 @@ export class CPUControls extends AbstractControls {
     }
 }
 
+export interface KeyboardControlsMapping {
+    moveUp?: number;
+    moveDown?: number;
+    moveLeft?: number;
+    moveRight?: number;
+    hammer?: number;
+    dash?: number;
+    menu?: number;
+}
+
 export class KeyboardControls extends AbstractControls {
     kb: Phaser.Keyboard;
     game: Phaser.Game;
@@ -113,31 +123,43 @@ export class KeyboardControls extends AbstractControls {
     keyCodeHammerTime: number;
     keyCodeDash: number;
     keyCodeMenu: number;
-    moveXAxis: number;
-    moveYAxis: number;
 
     constructor(game: Phaser.Game) {
         super();
         this.game = game;
         game.input.gamepad.start();
-        this.setupKeyboardLayout();
+        this.setupKeyboardLayout(localStorage.getItem('keyboard.layout'));
+        window.addEventListener('storage', (e) => {
+            if (e.key == 'keyboard.layout') {
+                this.setupKeyboardLayout(e.newValue);
+            }
+        });
     }
 
-    setupKeyboardLayout() {
+    setupKeyboardLayout(layout: string) {
         this.kb = this.game.input.keyboard;
-        let layout = localStorage.getItem('keyboard.layout');
+        try {
+            let mapping: KeyboardControlsMapping = JSON.parse(layout) || {};
+            this.keyCodeMoveUp = mapping.moveUp || Phaser.KeyCode.UP;
+            this.keyCodeMoveDown = mapping.moveDown || Phaser.KeyCode.DOWN;
+            this.keyCodeMoveLeft = mapping.moveDown || Phaser.KeyCode.LEFT;
+            this.keyCodeMoveRight = mapping.moveRight || Phaser.KeyCode.RIGHT;
+            this.keyCodeHammerTime = mapping.hammer || Phaser.KeyCode.SHIFT;
+            this.keyCodeDash = mapping.dash || Phaser.KeyCode.CONTROL;
+            this.keyCodeMenu = mapping.menu || Phaser.KeyCode.ESC;
+            return;
+        } catch (e) {
+        }
         if (layout == 'azerty') {
             this.useAzertyLayout();
         } else if (layout == 'qwerty') {
             this.useQwertyLayout();
-        } else if (layout == 'custom') {
-            this.useCustomKeyboardLayout();
         } else {
             this.useOtherKeyboardLayout();
         }
     }
 
-    useAzertyLayout() {
+    private useAzertyLayout() {
         this.keyCodeMoveUp = Phaser.KeyCode.Z;
         this.keyCodeMoveDown = Phaser.KeyCode.S;
         this.keyCodeMoveLeft = Phaser.KeyCode.Q;
@@ -145,10 +167,9 @@ export class KeyboardControls extends AbstractControls {
         this.keyCodeHammerTime = Phaser.KeyCode.K;
         this.keyCodeDash = Phaser.KeyCode.J;
         this.keyCodeMenu = Phaser.KeyCode.ESC;
-        localStorage.setItem('keyboard.layout', 'azerty');
     }
 
-    useQwertyLayout() {
+    private useQwertyLayout() {
         this.keyCodeMoveUp = Phaser.KeyCode.W;
         this.keyCodeMoveDown = Phaser.KeyCode.S;
         this.keyCodeMoveLeft = Phaser.KeyCode.A;
@@ -156,10 +177,9 @@ export class KeyboardControls extends AbstractControls {
         this.keyCodeHammerTime = Phaser.KeyCode.K;
         this.keyCodeDash = Phaser.KeyCode.J;
         this.keyCodeMenu = Phaser.KeyCode.ESC;
-        localStorage.setItem('keyboard.layout', 'qwerty');
     }
 
-    useOtherKeyboardLayout() {
+    private useOtherKeyboardLayout() {
         this.keyCodeMoveUp = Phaser.KeyCode.UP;
         this.keyCodeMoveDown = Phaser.KeyCode.DOWN;
         this.keyCodeMoveLeft = Phaser.KeyCode.LEFT;
@@ -167,18 +187,6 @@ export class KeyboardControls extends AbstractControls {
         this.keyCodeHammerTime = Phaser.KeyCode.SHIFT;
         this.keyCodeDash = Phaser.KeyCode.CONTROL;
         this.keyCodeMenu = Phaser.KeyCode.ESC;
-        localStorage.setItem('keyboard.layout', 'other');
-    }
-
-    useCustomKeyboardLayout() {
-        this.keyCodeMoveUp = this.readNumberFromLocalStorage('keyboard.layout.custom.moveUp', Phaser.KeyCode.UP);
-        this.keyCodeMoveDown = this.readNumberFromLocalStorage('keyboard.layout.custom.moveDown', Phaser.KeyCode.DOWN);
-        this.keyCodeMoveLeft = this.readNumberFromLocalStorage('keyboard.layout.custom.moveLeft', Phaser.KeyCode.LEFT);
-        this.keyCodeMoveRight = this.readNumberFromLocalStorage('keyboard.layout.custom.moveRight', Phaser.KeyCode.RIGHT);
-        this.keyCodeHammerTime = this.readNumberFromLocalStorage('keyboard.layout.custom.hammer', Phaser.KeyCode.SHIFT);
-        this.keyCodeDash = this.readNumberFromLocalStorage('keyboard.layout.custom.dash', Phaser.KeyCode.CONTROL);
-        this.keyCodeMenu = this.readNumberFromLocalStorage('keyboard.layout.custom.menu', Phaser.KeyCode.ESC);
-        localStorage.setItem('keyboard.layout', 'custom');
     }
 
     dashingAngle(playerPos: Phaser.Point): number {
@@ -254,6 +262,11 @@ export class PadControls extends AbstractControls {
         this.game = game;
         game.input.gamepad.start();
         this.padIndex = padIndex;
+        window.addEventListener('storage', (e) => {
+            if (e.key.startsWith('gamepad.') && e.key.endsWith('.layout')) {
+                this.pad = null;
+            }
+        });
     }
 
     private checkPad(): boolean {

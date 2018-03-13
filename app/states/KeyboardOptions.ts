@@ -23,19 +23,18 @@ export class KeyboardOptions extends AbstractState {
 
         const menu = new Menu(this.game).disableKeyboardCursor();
         menu.button("⬆⬇⬅➡ shift ctrl", 200, 300, () => {
-            (<UnderthiefGame>this.game).controllers.getKeyboard().useOtherKeyboardLayout();
+            localStorage.setItem('keyboard.layout', 'other');
             this.game.state.start('Options');
         });
         menu.button("Azerty zsqd jk", 200, 100, () => {
-            (<UnderthiefGame>this.game).controllers.getKeyboard().useAzertyLayout();
+            localStorage.setItem('keyboard.layout', 'azerty');
             this.game.state.start('Options');
         });
         menu.button("Qwerty wsad jk", 200, 200, () => {
-            (<UnderthiefGame>this.game).controllers.getKeyboard().useQwertyLayout();
+            localStorage.setItem('keyboard.layout', 'qwerty');
             this.game.state.start('Options');
         });
         menu.button("Custom", 200, 400, () => {
-            (<UnderthiefGame>this.game).controllers.getKeyboard().useOtherKeyboardLayout();
             this.game.state.start('KeyboardOptionsBindKey', true, false);
         });
         menu.button("Back", 200, 600, () => this.game.state.start('Options'));

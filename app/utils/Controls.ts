@@ -1,5 +1,7 @@
 /// <reference path="../../typings/phaser.d.ts"/>
 
+import { GamepadUtils } from "./GamepadUtils";
+
 export enum ControllerType {
     CPU = -1,
     KEYBOARD = 0,
@@ -229,60 +231,59 @@ export class KeyboardControls extends AbstractControls {
 
 }
 
+export interface PadControlsMapping {
+    moveXAxis?: number;
+    moveYAxis?: number;
+    dashButton?: number;
+    menuButton?: number;
+    hammerTimeButton?: number;
+}
+
 export class PadControls extends AbstractControls {
-    pad: Phaser.SinglePad;
-    game: Phaser.Game;
-    moveXAxis: number;
-    moveYAxis: number;
-    dashButton: number;
-    menuButton: number;
-    hammerTimeButton: number;
+    padIndex: number;
+    private pad: Phaser.SinglePad;
+    private game: Phaser.Game;
+    private moveXAxis: number;
+    private moveYAxis: number;
+    private dashButton: number;
+    private menuButton: number;
+    private hammerTimeButton: number;
 
     constructor(game: Phaser.Game, padIndex: number) {
         super();
         this.game = game;
         game.input.gamepad.start();
-        this.setupGamepadLayout(padIndex);
+        this.padIndex = padIndex;
     }
 
-    private setupGamepadLayout(padIndex: number) {
-        let layout = localStorage.getItem('gamepad' + padIndex + '.layout');
-        if (null == layout || layout == 'xbox') {
-            this.useXboxLayout(padIndex);
-        } else if (layout == 'custom') {
-            this.useCustomGamepadLayout(padIndex);
+    private checkPad(): boolean {
+        let pad = GamepadUtils.gamepadByIndex(this.game, this.padIndex);
+        if (pad != null && this.pad != pad) {
+            this.pad = pad;
+            let layout: PadControlsMapping = {};
+            try {
+                layout = JSON.parse(localStorage.getItem('gamepad.' + GamepadUtils.gamepadId(this.pad) + '.layout')) || {};
+            } catch (e) {
+                layout = {};
+            }
+            this.moveXAxis = layout.moveXAxis || Phaser.Gamepad.XBOX360_STICK_LEFT_X;
+            this.moveYAxis = layout.moveYAxis || Phaser.Gamepad.XBOX360_STICK_LEFT_Y;
+            this.dashButton = layout.dashButton || Phaser.Gamepad.XBOX360_X;
+            this.menuButton = layout.menuButton || Phaser.Gamepad.XBOX360_START;
+            this.hammerTimeButton = layout.hammerTimeButton || Phaser.Gamepad.XBOX360_A;
+            return true;
+        } else {
+            return false;
         }
     }
 
-    useXboxLayout(padIndex: number) {
-        padIndex = padIndex || 1;
-        this.pad = this.game.input.gamepad['pad' + padIndex];
-        this.moveXAxis = Phaser.Gamepad.XBOX360_STICK_LEFT_X;
-        this.moveYAxis = Phaser.Gamepad.XBOX360_STICK_LEFT_Y;
-        this.dashButton = Phaser.Gamepad.XBOX360_X;
-        this.menuButton = Phaser.Gamepad.XBOX360_START;
-        this.hammerTimeButton = Phaser.Gamepad.XBOX360_A;
-        localStorage.setItem('gamepad' + padIndex + '.layout', 'xbox');
-    }
-
-    useCustomGamepadLayout(padIndex: number) {
-        padIndex = padIndex || 1;
-        this.pad = this.game.input.gamepad['pad' + padIndex];
-        this.moveXAxis = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.moveXAxis', Phaser.Gamepad.XBOX360_STICK_LEFT_X);
-        this.moveYAxis = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.moveYAxis', Phaser.Gamepad.XBOX360_STICK_LEFT_Y);
-        this.dashButton = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.dashButton', Phaser.Gamepad.XBOX360_X);
-        this.menuButton = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.menuButton', Phaser.Gamepad.XBOX360_START);
-        this.hammerTimeButton = this.readNumberFromLocalStorage('gamepad' + padIndex + '.layout.custom.hammerButton', Phaser.Gamepad.XBOX360_A);
-        localStorage.setItem('gamepad' + padIndex + '.layout', 'custom');
-    }
-
     dashingAngle(playerPos: Phaser.Point): number {
-        if (this.pad && this.pad.isDown(this.dashButton)) {
+        if (this.checkPad() && this.pad.isDown(this.dashButton)) {
             return this.lookingAngle();
         }
     }
 
-    lookingAngle(): number {
+    private lookingAngle(): number {
         let dx = this.pad.axis(this.moveXAxis);
         let dy = this.pad.axis(this.moveYAxis);
         dx = Math.abs(dx) <= this.pad.deadZone ? 0 : dx;
@@ -293,29 +294,29 @@ export class PadControls extends AbstractControls {
             return null;
         }
     }
+
     isGoingUp(): boolean {
-        return this.pad && this.pad.axis(this.moveYAxis) < -this.pad.deadZone
+        return this.checkPad() && this.pad.axis(this.moveYAxis) < -this.pad.deadZone
             ;
     }
     isGoingDown(): boolean {
-        return this.pad && this.pad.axis(this.moveYAxis) > this.pad.deadZone
-            ;
+        return this.checkPad() && this.pad.axis(this.moveYAxis) > this.pad.deadZone;
     }
 
     isGoingLeft(): boolean {
-        return this.pad && this.pad.axis(this.moveXAxis) < -this.pad.deadZone;
+        return this.checkPad() && this.pad.axis(this.moveXAxis) < -this.pad.deadZone;
     }
 
     isGoingRight(): boolean {
-        return this.pad && this.pad.axis(this.moveXAxis) > this.pad.deadZone;
+        return this.checkPad() && this.pad.axis(this.moveXAxis) > this.pad.deadZone;
     }
 
     isHammerTime(): boolean {
-        return this.pad && this.pad.isDown(this.hammerTimeButton);
+        return this.checkPad() && this.pad.isDown(this.hammerTimeButton);
     }
 
     isMenuAsked(): boolean {
-        return this.pad && this.pad.isDown(this.menuButton);
+        return this.checkPad() && this.pad.isDown(this.menuButton);
     }
 
 }

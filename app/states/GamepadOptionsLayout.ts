@@ -2,6 +2,7 @@
 import {AbstractState} from "./AbstractState";
 import {Menu} from "../ui/Menu";
 import {UnderthiefGame} from "../UnderthiefGame";
+import {GamepadUtils} from '../utils/GamepadUtils';
 
 export class GamepadOptionsLayout extends AbstractState {
     padIndex: number;
@@ -27,11 +28,11 @@ export class GamepadOptionsLayout extends AbstractState {
 
         const menu = new Menu(this.game).disableGamepadCursor();
         menu.button("Xbox", 200, 200, () => {
-            (this.game as UnderthiefGame).controllers.getPad(this.padIndex).useXboxLayout(this.padIndex);
+            localStorage.setItem('gamepad.' + GamepadUtils.gamepadId(GamepadUtils.gamepadByIndex(this.game, this.padIndex)) + '.layout', 'xbox');
             this.game.state.start('Options');
         });
         menu.button("Custom", 200, 300, () => {
-            this.game.state.start('GamepadOptionsBindAxis', true, false, this.padIndex);
+            this.game.state.start('GamepadOptionsBindAxisOrButton', true, false, this.padIndex);
         });
         menu.button("Back", 200, 500, () => this.game.state.start('Options'));
     }

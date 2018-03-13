@@ -7,7 +7,7 @@ import { GamepadUtils } from "../utils/GamepadUtils";
 
 export class GamepadOptionsBindAxisOrButton extends AbstractState {
 
-    bindings = [
+    bindingsDescription = [
         { label: 'Pull move X axis', localStorageKeySuffix: 'moveXAxis' },
         { label: 'Pull move Y axis', localStorageKeySuffix: 'moveYAxis' },
         { label: 'Press hammer button', localStorageKeySuffix: 'hammerButton' },
@@ -20,6 +20,7 @@ export class GamepadOptionsBindAxisOrButton extends AbstractState {
     padIndex = 1;
     axisButtons: Phaser.Group;
     buttonsButtons: Phaser.Group;
+    bindings = {};
 
     constructor() {
         super();
@@ -30,12 +31,12 @@ export class GamepadOptionsBindAxisOrButton extends AbstractState {
         MenuMiniButton.preload(this.game);
     }
 
-    init(padIndex: number, binding: number = 0) {
-        this.padIndex = padIndex || 1;
-        this.pad = this.input.gamepad['pad' + this.padIndex];
-        if (binding >= this.bindings.length) {
+    init(padIndex: number, binding: number = 0, bindings: any) {
+        this.bindings = bindings || {};
+        this.pad = GamepadUtils.gamepadByIndex(this.game, padIndex);
+        if (binding >= this.bindingsDescription.length) {
             this.currentBinding = 0;
-            (this.game as UnderthiefGame).controllers.getPad(this.padIndex).useCustomGamepadLayout(padIndex);
+            localStorage.setItem('gamepad.' + GamepadUtils.gamepadId(this.pad) + '.layout', JSON.stringify(this.bindings));
             this.game.state.start('GamepadOptions');
         } else {
             this.currentBinding = binding;
@@ -44,7 +45,7 @@ export class GamepadOptionsBindAxisOrButton extends AbstractState {
 
     create() {
         super.create();
-        let logo = this.game.add.text(this.game.world.centerX, 0, this.bindings[this.currentBinding].label, { font: "42px monospace", fill: 'white' });
+        let logo = this.game.add.text(this.game.world.centerX, 0, this.bindingsDescription[this.currentBinding].label, { font: "42px monospace", fill: 'white' });
         logo.scale.x = 2;
         logo.scale.y = 2;
         logo.anchor.setTo(0.5, 0);
@@ -83,7 +84,7 @@ export class GamepadOptionsBindAxisOrButton extends AbstractState {
 
     update() {
         super.update();
-        if (this.bindings[this.currentBinding].localStorageKeySuffix.match(/axis/gi)) {
+        if (this.bindingsDescription[this.currentBinding].localStorageKeySuffix.match(/axis/gi)) {
             this.axisButtons.visible = true;
             this.buttonsButtons.visible = false;
         } else {
@@ -93,13 +94,13 @@ export class GamepadOptionsBindAxisOrButton extends AbstractState {
     }
 
     bindAxis(axisCode: number) {
-        localStorage.setItem('gamepad' + this.padIndex + '.layout.custom.' + this.bindings[this.currentBinding].localStorageKeySuffix, '' + axisCode);
-        this.game.state.start('GamepadOptionsBindAxis', true, false, this.padIndex, this.currentBinding + 1);
+        this.bindings[this.bindingsDescription[this.currentBinding].localStorageKeySuffix] = axisCode;
+        this.game.state.start('GamepadOptionsBindAxisOrButton', true, false, this.padIndex, this.currentBinding + 1);
     }
 
     bindButton(buttonCode: number) {
-        localStorage.setItem('gamepad' + this.padIndex + '.layout.custom.' + this.bindings[this.currentBinding].localStorageKeySuffix, '' + buttonCode);
-        this.game.state.start('GamepadOptionsBindAxis', true, false, this.padIndex, this.currentBinding + 1);
+        this.bindings[this.bindingsDescription[this.currentBinding].localStorageKeySuffix] = buttonCode;
+        this.game.state.start('GamepadOptionsBindAxisOrButton', true, false, this.padIndex, this.currentBinding + 1);
     }
 }
 

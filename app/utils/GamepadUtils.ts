@@ -15,4 +15,16 @@ export class GamepadUtils {
             return 0xFF0000;
         }
     }
+    static gamepadId(pad: Phaser.SinglePad): string {
+        let anyPad = <any>pad;
+        if (anyPad._rawPad) {
+            return anyPad._rawPad.id;
+        } else {
+            return null;
+        }
+    }
+
+    static gamepadByIndex(game: Phaser.Game, padIndex : number): Phaser.SinglePad {
+        return game.input.gamepad['pad' + padIndex];
+    }
 }

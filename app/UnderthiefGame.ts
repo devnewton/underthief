@@ -28,7 +28,7 @@ export class UnderthiefGame extends Phaser.Game {
         this.state.add('Help2', Help2);
         this.state.add('Options', Options);
         this.state.add('GamepadOptionsLayout', GamepadOptionsLayout);
-        this.state.add('GamepadOptionsBindAxis', GamepadOptionsBindAxisOrButton);
+        this.state.add('GamepadOptionsBindAxisOrButton', GamepadOptionsBindAxisOrButton);
         this.state.add('KeyboardOptions', KeyboardOptions);
         this.state.add('KeyboardOptionsBindKey', KeyboardOptionsBindKey);
         this.state.add('GamepadOptions', GamepadOptions);

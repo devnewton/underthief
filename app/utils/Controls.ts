@@ -43,7 +43,7 @@ export class Controllers {
     }
 
     updatePadLayout() {
-        for(let i = 1; i<4; ++i) {
+        for (let i = 1; i < 4; ++i) {
             (<PadControls>this.controllers[i]).updatePadLayout();
         }
     }
@@ -271,19 +271,21 @@ export class PadControls extends AbstractControls {
 
     private checkPad(): boolean {
         let pad = GamepadUtils.gamepadByIndex(this.game, this.padIndex);
-        if (pad != null && this.pad != pad) {
-            this.pad = pad;
-            let layout: PadControlsMapping = {};
-            try {
-                layout = JSON.parse(localStorage.getItem('gamepad.' + GamepadUtils.gamepadId(this.pad) + '.layout')) || {};
-            } catch (e) {
-                layout = {};
+        if (pad != null) {
+            if (this.pad != pad) {
+                this.pad = pad;
+                let layout: PadControlsMapping = {};
+                try {
+                    layout = JSON.parse(localStorage.getItem('gamepad.' + GamepadUtils.gamepadId(this.pad) + '.layout')) || {};
+                } catch (e) {
+                    layout = {};
+                }
+                this.moveXAxis = layout.moveXAxis || Phaser.Gamepad.XBOX360_STICK_LEFT_X;
+                this.moveYAxis = layout.moveYAxis || Phaser.Gamepad.XBOX360_STICK_LEFT_Y;
+                this.dashButton = layout.dashButton || Phaser.Gamepad.XBOX360_X;
+                this.menuButton = layout.menuButton || Phaser.Gamepad.XBOX360_START;
+                this.hammerTimeButton = layout.hammerTimeButton || Phaser.Gamepad.XBOX360_A;
             }
-            this.moveXAxis = layout.moveXAxis || Phaser.Gamepad.XBOX360_STICK_LEFT_X;
-            this.moveYAxis = layout.moveYAxis || Phaser.Gamepad.XBOX360_STICK_LEFT_Y;
-            this.dashButton = layout.dashButton || Phaser.Gamepad.XBOX360_X;
-            this.menuButton = layout.menuButton || Phaser.Gamepad.XBOX360_START;
-            this.hammerTimeButton = layout.hammerTimeButton || Phaser.Gamepad.XBOX360_A;
             return true;
         } else {
             return false;

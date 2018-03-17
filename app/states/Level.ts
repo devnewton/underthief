@@ -232,7 +232,8 @@ export class Level extends AbstractState {
         if (this.menu.alive) {
             return true;
         }
-        let isMenuAsked = false;
+        const controllers = (this.game as UnderthiefGame).controllers;
+        let isMenuAsked = controllers.getKeyboard().isMenuAsked();
         this.girlsTeam.forEachAlive((player) => {
             isMenuAsked = isMenuAsked || player.controls.isMenuAsked();
         }, null);

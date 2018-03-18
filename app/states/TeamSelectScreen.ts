@@ -8,6 +8,11 @@ import { ControllerType } from "../utils/Controls";
 
 export class TeamSelectScreen extends AbstractState {
 
+    bettySelect: MenuSelect<ControllerType>;
+    betty2Select: MenuSelect<ControllerType>;
+    georgeSelect: MenuSelect<ControllerType>;
+    george2Select: MenuSelect<ControllerType>;
+
     constructor() {
         super();
     }
@@ -55,41 +60,60 @@ export class TeamSelectScreen extends AbstractState {
             new MenuSelectOption<ControllerType>(ControllerType.PAD4, 'Pad 4')
         ];
 
-        let bettySelect = menu.select(200, 150, playerOptions);
-        let betty2Select = menu.select(200, 250, playerOptions);
-        let georgeSelect = menu.select(200, 350, playerOptions);
-        let george2Select = menu.select(200, 450, playerOptions);
+        this.bettySelect = menu.select(200, 150, playerOptions);
+        this.betty2Select = menu.select(200, 250, playerOptions);
+        this.georgeSelect = menu.select(200, 350, playerOptions);
+        this.george2Select = menu.select(200, 450, playerOptions);
 
-        switch (this.input.gamepad.padsConnected) {
-            case 0:
-                bettySelect.setSelectedValue(ControllerType.KEYBOARD);
-                break;
-            case 1:
-                bettySelect.setSelectedValue(ControllerType.PAD1);
-                break;
-            case 2:
-                bettySelect.setSelectedValue(ControllerType.PAD1);
-                georgeSelect.setSelectedValue(ControllerType.PAD2);
-                break;
-            case 3:
-                bettySelect.setSelectedValue(ControllerType.PAD1);
-                betty2Select.setSelectedValue(ControllerType.PAD2);
-                georgeSelect.setSelectedValue(ControllerType.PAD3);
-                break;
-            default:
-                bettySelect.setSelectedValue(ControllerType.PAD1);
-                betty2Select.setSelectedValue(ControllerType.PAD2);
-                georgeSelect.setSelectedValue(ControllerType.PAD3);
-                george2Select.setSelectedValue(ControllerType.PAD4);
-                break;
-        }
+        this.autoSelect();
         menu.button("Play", 200, 600, () => {
             let config = new LevelConfig();
-            config.bettyController = bettySelect.getSelectedValue();
-            config.betty2Controller = betty2Select.getSelectedValue();
-                        config.georgeController = georgeSelect.getSelectedValue();
-                        config.george2Controller = george2Select.getSelectedValue();
+            config.bettyController = this.bettySelect.getSelectedValue();
+            config.betty2Controller = this.betty2Select.getSelectedValue();
+            config.georgeController = this.georgeSelect.getSelectedValue();
+            config.george2Controller = this.george2Select.getSelectedValue();
             this.game.state.start('Level', true, false, config)
         });
+
+        this.input.gamepad.onConnectCallback = this.input.gamepad.onDisconnectCallback = () => this.autoSelect();
+    }
+
+    shutdown() {
+        this.input.gamepad.onConnectCallback = this.input.gamepad.onDisconnectCallback = null;
+    }
+
+    autoSelect() {
+        switch (this.input.gamepad.padsConnected) {
+            case 0:
+                this.bettySelect.setSelectedValue(ControllerType.KEYBOARD);
+                this.betty2Select.setSelectedValue(ControllerType.CPU);
+                this.georgeSelect.setSelectedValue(ControllerType.CPU);
+                this.george2Select.setSelectedValue(ControllerType.CPU);
+                break;
+            case 1:
+                this.bettySelect.setSelectedValue(ControllerType.PAD1);
+                this.betty2Select.setSelectedValue(ControllerType.CPU);
+                this.georgeSelect.setSelectedValue(ControllerType.CPU);
+                this.george2Select.setSelectedValue(ControllerType.CPU);
+                break;
+            case 2:
+                this.bettySelect.setSelectedValue(ControllerType.PAD1);
+                this.betty2Select.setSelectedValue(ControllerType.CPU);
+                this.georgeSelect.setSelectedValue(ControllerType.PAD2);
+                this.george2Select.setSelectedValue(ControllerType.CPU);
+                break;
+            case 3:
+                this.bettySelect.setSelectedValue(ControllerType.PAD1);
+                this.betty2Select.setSelectedValue(ControllerType.PAD2);
+                this.georgeSelect.setSelectedValue(ControllerType.PAD3);
+                this.george2Select.setSelectedValue(ControllerType.CPU);
+                break;
+            default:
+                this.bettySelect.setSelectedValue(ControllerType.PAD1);
+                this.betty2Select.setSelectedValue(ControllerType.PAD2);
+                this.georgeSelect.setSelectedValue(ControllerType.PAD3);
+                this.george2Select.setSelectedValue(ControllerType.PAD4);
+                break;
+        }
     }
 }
